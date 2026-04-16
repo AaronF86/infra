@@ -2,14 +2,16 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 # /tmp/my-hetzner-vm/hardware-configuration.nix
-
-{ config, lib, pkgs, modulesPath, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-        (modulesPath + "/installer/scan/not-detected.nix")
-
+    (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
   networking.useDHCP = lib.mkDefault true;
