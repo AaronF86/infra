@@ -90,6 +90,7 @@
           ./hosts/staff/services/opebao/openbao.nix
           ./hosts/staff/services/opebao/proxy.nix
           ./hosts/staff/services/spindle.nix
+          ./hosts/staff/services/minecraft-forge.nix
         ];
         target = "192.168.1.236";
       };
@@ -106,6 +107,7 @@
           ./hosts/gateway/services/tunnel.nix
           ./hosts/gateway/services/ssh-forward.nix
           ./hosts/gateway/services/traefik.nix
+          ./hosts/gateway/services/minecraft-tunnel.nix
         ];
         target = "46.224.126.188";
       };
