@@ -68,6 +68,7 @@
           sops-nix.nixosModules.sops
           ./hosts/grimoire/configuration.nix
           ./hosts/grimoire/services/samba.nix
+          ./hosts/grimoire/services/postgres.nix
         ];
         target = "192.168.1.116";
       };
@@ -91,6 +92,8 @@
           ./hosts/staff/services/opebao/proxy.nix
           ./hosts/staff/services/spindle.nix
           ./hosts/staff/services/minecraft-forge.nix
+          ./hosts/staff/services/stalwart.nix
+          ./hosts/staff/services/github-runner.nix
         ];
         target = "192.168.1.236";
       };
@@ -107,7 +110,8 @@
           ./hosts/gateway/services/tunnel.nix
           ./hosts/gateway/services/ssh-forward.nix
           ./hosts/gateway/services/traefik.nix
-          ./hosts/gateway/services/minecraft-tunnel.nix
+          ./hosts/gateway/services/haproxy.nix
+          ./hosts/gateway/services/nftables.nix
         ];
         target = "46.224.126.188";
       };
