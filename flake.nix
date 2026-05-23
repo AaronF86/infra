@@ -95,7 +95,7 @@
           ./hosts/staff/services/stalwart.nix
           ./hosts/staff/services/github-runner.nix
         ];
-        target = "192.168.1.236";
+        target = "192.168.1.243";
       };
 
       # WAN-facing tunnel
@@ -108,7 +108,6 @@
           sops-nix.nixosModules.sops
           ./hosts/gateway/configuration.nix
           ./hosts/gateway/services/tunnel.nix
-          ./hosts/gateway/services/ssh-forward.nix
           ./hosts/gateway/services/traefik.nix
           ./hosts/gateway/services/haproxy.nix
           ./hosts/gateway/services/nftables.nix

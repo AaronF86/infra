@@ -44,7 +44,7 @@ in {
     settings = {
       server = {
         hostname = mxHost;
-      security = {
+        security = {
           trusted-networks = [
             "10.44.0.0/16"
           ];
@@ -78,7 +78,7 @@ in {
             bind = "[::]:8080";
             url = "https://mail.${mailDomain}";
             protocol = "http";
-              allowed-networks = [ "10.44.0.0/16" ];
+            allowed-networks = ["10.44.0.0/16"];
           };
 
           management = {

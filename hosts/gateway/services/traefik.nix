@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   services.traefik = {
     enable = true;
 
@@ -32,42 +32,41 @@
     dynamicConfigOptions.http = {
       routers = {
         spindle = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`spindle.aaronf86.tech`)";
           service = "spindle";
           tls.certResolver = "letsencrypt";
         };
-
         mailadmin = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`webadmin.notify.aaronf86.tech`)";
           service = "mailadmin";
           tls.certResolver = "letsencrypt";
         };
 
         mail = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`mail.notify.aaronf86.tech`)";
           service = "mail";
           tls.certResolver = "letsencrypt";
         };
 
         pds = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`pds.aaronf86.tech`)";
           service = "pds";
           tls.certResolver = "letsencrypt";
         };
 
         knot = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`knot.aaronf86.tech`)";
           service = "knot";
           tls.certResolver = "letsencrypt";
         };
 
         staff-files = {
-          entryPoints = [ "websecure" ];
+          entryPoints = ["websecure"];
           rule = "Host(`fs.aaronf86.tech`)";
           service = "staff-files";
           tls.certResolver = "letsencrypt";
@@ -76,27 +75,27 @@
 
       services = {
         spindle.loadBalancer.servers = [
-          { url = "http://10.44.0.3:6555"; }
+          {url = "http://10.44.0.3:6555";}
         ];
 
         mailadmin.loadBalancer.servers = [
-          { url = "http://10.44.0.3:8081"; }
+          {url = "http://10.44.0.3:8081";}
         ];
 
         mail.loadBalancer.servers = [
-          { url = "http://10.44.0.3:8080"; }
+          {url = "http://10.44.0.3:8080";}
         ];
 
         staff-files.loadBalancer.servers = [
-          { url = "http://10.44.0.3:8088"; }
+          {url = "http://10.44.0.3:8088";}
         ];
 
         pds.loadBalancer.servers = [
-          { url = "http://10.44.0.3:3000"; }
+          {url = "http://10.44.0.3:3000";}
         ];
 
         knot.loadBalancer.servers = [
-          { url = "http://10.44.0.3:5555"; }
+          {url = "http://10.44.0.3:5555";}
         ];
       };
     };

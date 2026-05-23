@@ -1,7 +1,4 @@
-{ config, ... }:
-
-{
-
+{config, ...}: {
   networking.nftables.enable = true;
 
   networking.nftables.tables.nat = {
@@ -31,6 +28,6 @@
     enable = true;
 
     # allow forwarding traffic through gateway
-    allowedTCPPorts = [ 25 465 587 993 143 ];
+    allowedTCPPorts = [25 465 587 993 143];
   };
 }

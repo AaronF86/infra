@@ -16,7 +16,7 @@
       listen_addresses = "*";
     };
 
-    ensureDatabases = [ "stalwart" ];
+    ensureDatabases = ["stalwart"];
 
     ensureUsers = [
       {
