@@ -49,7 +49,40 @@
     git
     curl
     tree
+    lsd
+    vim
   ];
+  nixpkgs.config.allowUnfree = true;
 
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+
+      warn-dirty = false;
+    };
+
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
+    optimise = {
+      automatic = true;
+      dates = ["weekly"];
+    };
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    dates = "weekly";
+    flake = "/home/aaron/dotfiles";
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "--commit-lock-file"
+    ];
+    allowReboot = false;
+  };
   system.stateVersion = "26.05";
 }
