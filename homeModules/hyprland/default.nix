@@ -5,19 +5,16 @@
   meta,
   ...
 }: {
-  imports =
-    [
-      ./binds.nix
-      ./hyprpaper.nix
-      ./waybar.nix
-      ./dunst.nix
-      ./wofi.nix
-    ]
-    ++ lib.optionals (builtins.pathExists (./monitors + "/${meta.hostname}.nix")) [
-      (./monitors + "/${meta.hostname}.nix")
-    ];
+  imports = [
+    ./binds.nix
+    ./hyprpaper.nix
+    ./waybar.nix
+    ./dunst.nix
+    ./wofi.nix
+  ];
 
   wayland.windowManager.hyprland = {
+    configType = "hyprlang";
     enable = true;
 
     settings = {
@@ -54,11 +51,6 @@
         enabled = false;
       };
 
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
-
       misc = {
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
@@ -76,5 +68,7 @@
   home.packages = with pkgs; [
     way-displays
     grimblast
+    
   ];
+  services.flameshot.enable  = true;
 }

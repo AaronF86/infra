@@ -15,7 +15,6 @@
 
       "$mod SHIFT, Q, killactive,"
       "$mod CTRL, E, exit,"
-      "$mod, SPACE, togglesplit,"
       "$mod, F, fullscreen"
       "$mod, V, togglefloating,"
       "$mod, P, pseudo,"

@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   terminal = "ghostty";
   menu = "wofi --show drun";
 
@@ -8,12 +10,12 @@ let
   down = "k";
   up = "l";
   right = "semicolon";
-in
-{
+in {
   imports = [
-     ./binds.nix 
-     ../hyprland/wofi.nix
-     ];
+    ./binds.nix
+    ../hyprland/wofi.nix
+    ../hyprland/waybar.nix
+  ];
   wayland.windowManager.sway = {
     enable = true;
     xwayland = true;
@@ -21,7 +23,7 @@ in
     config = {
       inherit terminal menu;
 
-      bars = [ ];
+      bars = [];
 
       input = {
         "type:keyboard" = {

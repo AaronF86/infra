@@ -3,7 +3,6 @@
   pkgs,
   ...
 }: {
-  # Enable Waybar
   programs.waybar = {
     enable = true;
 
@@ -13,45 +12,32 @@
         position = "top";
         height = 36;
         output = ["*"];
-        modules-left = ["custom/logo" "hyprland/workspaces"];
-        modules-right = ["pulseaudio" "bluetooth" "network" "custom/vpn" "custom/language" "battery" "clock"];
 
-        "pulseaudio" = {
-          format = "{icon} {volume}%";
-          format-muted = " Muted";
-          format-icons = {
-            headphone = "";
-            hands-free = "";
-            headset = "";
-            phone = "";
-            portable = "";
-            car = "";
-            default = ["" "" ""];
-          };
-          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          on-click-right = "pavucontrol";
-        };
-
-        "bluetooth" = {
-          format = " {status}";
-          format-disabled = ""; # an empty format will hide the module
-          format-connected = " {num_connections}";
-          tooltip-format = "{controller_alias}\n{num_connections} connected";
-          tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
-          tooltip-format-enumerate-connected = "{device_alias}";
-          on-click = "blueman-manager";
-        };
+        modules-left = ["custom/logo" "sway/workspaces"];
+        modules-right = [
+          "pulseaudio"
+          "bluetooth"
+          "network"
+          "custom/vpn"
+          "custom/flameshot"
+          "battery"
+          "clock"
+        ];
 
         "custom/logo" = {
           format = "";
           tooltip = false;
           on-click = "bemenu-run --accept-single -n -p 'Launch'";
         };
-
-        "hyprland/workspaces" = {
-          format = "{icon}";
-          on-click = "activate";
+        "custom/flameshot" = {
+          format = "󰹑";
+          tooltip = false;
+          on-click = "flameshot gui";
+        };
+        "sway/workspaces" = {
+          disable-scroll = true;
           all-outputs = false;
+          format = "{name}";
           format-icons = {
             "1" = "1";
             "2" = "2";
@@ -64,12 +50,51 @@
           };
         };
 
+        "pulseaudio" = {
+          format = "{icon} {volume}%";
+          format-muted = "󰝟 Muted";
+
+          format-icons = {
+            headphone = "󰋋";
+            hands-free = "󰋎";
+            headset = "󰋎";
+            phone = "󰏲";
+            portable = "󰏲";
+            car = "󰄋";
+            default = ["󰕿" "󰖀" "󰕾"];
+          };
+
+          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          on-click-right = "pavucontrol";
+        };
+
+        "bluetooth" = {
+          format = "󰂯 {status}";
+          format-disabled = "";
+          format-connected = "󰂱 {num_connections}";
+          tooltip-format = "{controller_alias}\n{num_connections} connected";
+          tooltip-format-connected = ''
+            {controller_alias}
+            {num_connections} connected
+
+            {device_enumerate}
+          '';
+          tooltip-format-enumerate-connected = "{device_alias}";
+          on-click = "blueman-manager";
+        };
+
         "network" = {
-          format-wifi = "  {essid} ({signalStrength}%)";
-          format-ethernet = "  {ifname}";
-          format-disconnected = "  Disconnected";
+          format-wifi = "󰖩  {essid} ({signalStrength}%)";
+          format-ethernet = "󰈀  {ifname}";
+          format-disconnected = "󰖪  Disconnected";
+
           tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-          tooltip-format-wifi = "{essid} ({signalStrength}%)\n  {ipaddr}/{cidr}\n  {frequency} MHz";
+          tooltip-format-wifi = ''
+            {essid} ({signalStrength}%)
+            {ipaddr}/{cidr}
+            {frequency} MHz
+          '';
+
           on-click = "nm-connection-editor";
           interval = 5;
         };
@@ -83,16 +108,17 @@
           tooltip = true;
         };
 
-        "clock" = {
-          format = "{:%a %d %b  %H:%M}";
-          interval = 60;
+        "battery" = {
+          format = "{icon} {capacity}%";
+          format-charging = "󰂄 {capacity}%";
+          format-icons = ["" "" "" "" ""];
+          interval = 30;
           tooltip = false;
         };
 
-        "battery" = {
-          format = "{icon} {capacity}%";
-          format-icons = ["" "" "" "" ""];
-          interval = 30;
+        "clock" = {
+          format = "󰥔 {:%a %d %b  %H:%M}";
+          interval = 60;
           tooltip = false;
         };
       };
@@ -101,7 +127,9 @@
     style = ''
       * {
         all: unset;
-        font-family: "JetBrainsMono Nerd Font Mono", "NotoSans Nerd Font Mono", monospace;
+        font-family: "JetBrainsMono Nerd Font Mono",
+                     "NotoSans Nerd Font Mono",
+                     monospace;
         font-size: 12px;
         color: #bbc2cf;
       }
@@ -127,13 +155,22 @@
         margin: 0 4px;
         border-radius: 6px;
         min-width: 24px;
+
         color: #bbc2cf;
         background: transparent;
-        transition: background-color 0.2s ease, color 0.2s ease;
+
+        transition:
+          background-color 0.2s ease,
+          color 0.2s ease;
       }
 
-      #workspaces button.active {
+      #workspaces button.focused {
         background: #51afef;
+        color: #282c34;
+      }
+
+      #workspaces button.urgent {
+        background: #ff6c6b;
         color: #282c34;
       }
 
@@ -142,13 +179,16 @@
         color: #51afef;
       }
 
-      #custom-language, #clock, #battery {
+      #pulseaudio,
+      #bluetooth,
+      #network,
+      #custom-vpn,
+      #battery,
+      #clock {
         padding: 0 8px;
-        color: #bbc2cf;
       }
 
       #network {
-        padding: 0 8px;
         color: #98be65;
       }
 
@@ -157,7 +197,6 @@
       }
 
       #custom-vpn {
-        padding: 0 8px;
         color: #51afef;
       }
 
@@ -180,6 +219,10 @@
       #clock {
         color: #c678dd;
       }
+      #custom-flameshot {
+        padding: 0 8px;
+        color: #e5c07b;
+      }
     '';
   };
 
@@ -187,7 +230,12 @@
 
   home.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
+
     waybar
+    bemenu
+    pavucontrol
+    blueman
+
     networkmanagerapplet
     networkmanager-openvpn
     networkmanager-openconnect

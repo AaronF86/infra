@@ -72,6 +72,31 @@
       // attrs;
 
     hosts = {
+      desktop = mkHost {
+        system = "x86_64-linux";
+
+        deployment.targetHost = "192.168.1.216";
+
+        modules = [
+          disko.nixosModules.disko
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+
+              extraSpecialArgs = {
+                inherit inputs zen-browser;
+              };
+
+              users.aaron = import ./homeModules/aaron.nix;
+            };
+          }
+
+          ./hosts/desktop/configuration.nix
+        ];
+      };
       framework13 = mkHost {
         system = "x86_64-linux";
 
@@ -216,27 +241,23 @@
     nixosConfigurations =
       lib.mapAttrs mkSystem hosts;
 
-    colmenaHive =
-      colmena.lib.makeHive (
-        {
-          meta = {
-            nixpkgs = import nixpkgs {
-              system = "x86_64-linux";
-            };
-
-            specialArgs = mkSpecialArgs "x86_64-linux";
+    colmenaHive = colmena.lib.makeHive (
+      {
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
           };
 
-          defaults = {
-            pkgs,
-            ...
-          }: {
-            environment.systemPackages = [
-              pkgs.curl
-            ];
-          };
-        }
-        // lib.mapAttrs mkColmenaHost hosts
-      );
+          specialArgs = mkSpecialArgs "x86_64-linux";
+        };
+
+        defaults = {pkgs, ...}: {
+          environment.systemPackages = [
+            pkgs.curl
+          ];
+        };
+      }
+      // lib.mapAttrs mkColmenaHost hosts
+    );
   };
 }

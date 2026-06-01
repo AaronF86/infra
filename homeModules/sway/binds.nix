@@ -1,24 +1,21 @@
-{ config, ... }:
-
-let
+{config, ...}: let
   modifier = "Mod4";
   left = "j";
   down = "k";
   up = "l";
   right = "semicolon";
-in
-{
+in {
   wayland.windowManager.sway.config = {
     inherit modifier;
     keybindings = {
       "${modifier}+Return" = "exec ${config.wayland.windowManager.sway.config.terminal}";
       "${modifier}+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
 
-      "${modifier}+q" = "kill";
+      "${modifier}+Shift+q" = "kill";
 
-      "${modifier}+Shift+q" =
-        "exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'";
+      "${modifier}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'";
 
+      "${modifier}+Shift+s" = "exec flameshot gui";
       # Focus
       "${modifier}+${left}" = "focus left";
       "${modifier}+${down}" = "focus down";
@@ -30,7 +27,7 @@ in
       "${modifier}+Shift+${down}" = "move down";
       "${modifier}+Shift+${up}" = "move up";
       "${modifier}+Shift+${right}" = "move right";
-      
+
       "${modifier}+h" = "splith";
       "${modifier}+v" = "splitv";
       "${modifier}+f" = "fullscreen";

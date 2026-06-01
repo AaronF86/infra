@@ -27,7 +27,7 @@
 
   users.users.aaron = {
     isNormalUser = true;
-    extraGroups = ["wheel"];
+    extraGroups = ["wheel" "video"];
 
     openssh.authorizedKeys.keys = commonArgs.sshKeys;
   };

@@ -3,7 +3,6 @@
   pkgs,
   lib,
   ...
-}:
-{
-    services.kmscon.enable = true;
+}: {
+  services.kmscon.enable = false;
 }

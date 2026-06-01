@@ -1,6 +1,8 @@
-  { pkgs, inputs, ... }:
-
-  {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   home.username = "aaron";
   home.homeDirectory = "/home/aaron";
 
@@ -11,7 +13,6 @@
     gradle
     vesktop
     prismlauncher
-    
 
     # Development Tools
     clang-tools
@@ -20,16 +21,18 @@
     rust-analyzer # Rust LSP
     clippy # Rust linter
     sqlite
-    jetbrains.idea  ];
+    jetbrains.idea
+  ];
 
-      imports = [
-        ./sway/default.nix
-        ./ghostty.nix
-        ./git.nix
-        ./ssh.nix
-        ./neovim/default.nix
-        ./zen.nix
-      ];
+  imports = [
+    ./hyprland/default.nix
+    ./ghostty.nix
+    ./git.nix
+    ./ssh.nix
+    ./neovim/default.nix
+    ./zen.nix
+    ./hyprland/monitors/desktop.nix
+  ];
 
-        home.stateVersion = "26.05";
-  }
+  home.stateVersion = "26.05";
+}
