@@ -68,7 +68,16 @@
   home.packages = with pkgs; [
     way-displays
     grimblast
-    
   ];
-  services.flameshot.enable  = true;
+  services.flameshot.enable = true;
+
+  xdg.terminal-exec = {
+    enable = true;
+
+    settings = {
+      default = [
+        "com.mitchellh.ghostty.desktop"
+      ];
+    };
+  };
 }

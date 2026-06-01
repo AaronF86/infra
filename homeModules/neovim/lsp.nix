@@ -1,104 +1,158 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    nixd
+    alejandra
+
+    rust-analyzer
+    gopls
+    pyright
+    jdt-language-server
+    haskell-language-server
+    tinymist
+    sqls
+  ];
+
   programs.neovim = {
     plugins = with pkgs.vimPlugins; [
-      nvim-treesitter.withAllGrammars
       nvim-lspconfig
-      blink-cmp
-      friendly-snippets
-      emmet-vim
     ];
 
-    extraConfig = ''
-      lua << EOF
-      -- Treesitter setup with error handling
-      vim.schedule(function()
-        local ok, ts_config = pcall(require, "nvim-treesitter.configs")
-        if ok then
-          ts_config.setup({
-            highlight = { enable = true },
-            indent = { enable = true }
-          })
-          vim.o.foldmethod = "expr"
-        else
-          vim.notify("nvim-treesitter not available yet", vim.log.levels.WARN)
-        end
-      end)
+    extraLuaConfig = ''
+            vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+              config = config or {}
+              config.border = "rounded"
+              return vim.lsp.handlers.hover(err, result, ctx, config)
+            end
 
-      -- LSP servers (using new Neovim 0.11 API)
-      vim.schedule(function()
-        local servers = {
-          "clangd",
-          "rust_analyzer",
-          "hls",
-          "pyright",
-          "ruff",
-          "lua_ls",
-          "html",
-          "cssls",
-          "astro",
-          "ts_ls",
-        }
+            vim.lsp.config("nixd", {
+              cmd = { "nixd" },
+              filetypes = { "nix" },
+              root_markers = { "flake.nix", ".git" },
 
-        for _, server in ipairs(servers) do
-          local ok = pcall(function()
-            vim.lsp.config(server, {})
-            vim.lsp.enable(server)
-          end)
-        end
-      end)
+              settings = {
+                nixd = {
+                  nixpkgs = {
+                    expr = "import <nixpkgs> { }",
+                  },
 
-      -- Completion (Blink CMP)
-      vim.schedule(function()
-        local ok, cmp = pcall(require, "blink.cmp")
-        if ok then
-          cmp.setup({
-            signature = { enabled = true },
-            completion = {
-              documentation = { auto_show = true },
-              menu = {
-                auto_show = true,
-                draw = {
-                  columns = {
-                    { "kind_icon" },
-                    { "label" },
-                    { "label_description" },
-                    { "kind" },
+                  formatting = {
+                    command = { "alejandra" },
+                  },
+
+                  options = {
+                    nixos = {
+                      expr = '(builtins.getFlake (toString ./.)).nixosConfigurations.<name>.options',
+                    },
+                    ["home-manager"] = {
+                      expr = '(builtins.getFlake (toString ./.)).homeConfigurations."<user>@<host>".options',
+                    },
+                  },
+
+                  diagnostic = {
+                    suppress = {
+                      "sema-extra-with",
+                    },
                   },
                 },
               },
-            },
-            keymap = {
-              preset = "default",
-              ["<CR>"] = { "accept", "fallback" },
-              ["<Tab>"] = { "select_next", "fallback" },
-              ["<S-Tab>"] = { "select_prev", "fallback" },
-              ["<C-Space>"] = { "show", "show_documentation", "fallback" },
-              ["<C-e>"] = { "hide", "fallback" },
-              ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-              ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-              ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-            },
-          })
-        end
-      end)
-      EOF
+            })
+
+                  vim.lsp.config("rust_analyzer", {
+                    cmd = { "rust-analyzer" },
+                    filetypes = { "rust" },
+                    root_markers = { "Cargo.toml", ".git" },
+                  })
+
+                  vim.lsp.config("gopls", {
+                    cmd = { "gopls" },
+                    filetypes = { "go" },
+                    root_markers = { "go.mod", ".git" },
+                  })
+
+                  vim.lsp.config("pyright", {
+                    cmd = { "pyright-langserver", "--stdio" },
+                    filetypes = { "python" },
+                    root_markers = { "pyproject.toml", "setup.py", ".git" },
+                  })
+
+                  vim.lsp.config("jdtls", {
+                    cmd = { "jdtls" },
+                    filetypes = { "java" },
+                    root_markers = { "pom.xml", "build.gradle", ".git" },
+                  })
+
+                  vim.lsp.config("hls", {
+                    cmd = { "haskell-language-server-wrapper", "--lsp" },
+                    filetypes = { "haskell", "lhaskell" },
+                    root_markers = { "stack.yaml", "cabal.project", ".git" },
+                  })
+
+                  vim.lsp.config("tinymist", {
+                    cmd = { "tinymist" },
+                    filetypes = { "typst" },
+                    root_markers = { ".git" },
+                  })
+
+                  vim.lsp.config("sqls", {
+                    cmd = { "sqls" },
+                    filetypes = { "sql" },
+                    root_markers = { ".git" },
+                  })
+
+                  vim.lsp.enable({
+                    "nixd",
+                    "rust_analyzer",
+                    "gopls",
+                    "pyright",
+                    "jdtls",
+                    "hls",
+                    "tinymist",
+                    "sqls",
+                  })
+
+                  vim.api.nvim_create_autocmd("LspAttach", {
+                    callback = function(ev)
+                      local opts = { buffer = ev.buf, silent = true }
+
+                      vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+                      vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+                      vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+
+                      vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+
+                      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+                      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+
+                      vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+                      vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+                      vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+
+                      vim.keymap.set("n", "<leader>f", function()
+                        vim.lsp.buf.format({ async = true })
+                      end, opts)
+                    end,
+                  })
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if not client then return end
+
+          if client:supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({
+              event = "BufWritePre",
+              buffer = ev.buf,
+            })
+
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = ev.buf,
+              callback = function()
+                vim.lsp.buf.format({ bufnr = ev.buf })
+              end,
+            })
+          end
+        end,
+      })
     '';
   };
-
-  home.packages = with pkgs; [
-    clang-tools
-    clippy
-    rust-analyzer
-    pyright
-    ruff
-    haskell-language-server
-    lua-language-server
-    astro-language-server
-    typescript-language-server
-    vscode-langservers-extracted
-  ];
 }
