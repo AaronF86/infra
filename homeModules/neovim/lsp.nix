@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
+
   home.packages = with pkgs; [
     nixd
     alejandra
@@ -10,128 +11,146 @@
     haskell-language-server
     tinymist
     sqls
+    nodejs
   ];
 
   programs.neovim = {
+
     plugins = with pkgs.vimPlugins; [
       nvim-lspconfig
+
+      blink-cmp
+      friendly-snippets
+      nvim-treesitter
+      nvim-autopairs
+      copilot-vim
     ];
 
     extraLuaConfig = ''
-            vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
-              config = config or {}
-              config.border = "rounded"
-              return vim.lsp.handlers.hover(err, result, ctx, config)
-            end
 
-            vim.lsp.config("nixd", {
-              cmd = { "nixd" },
-              filetypes = { "nix" },
-              root_markers = { "flake.nix", ".git" },
+     require("nvim-autopairs").setup({
+        check_ts = true,
+      })
 
-              settings = {
-                nixd = {
-                  nixpkgs = {
-                    expr = "import <nixpkgs> { }",
-                  },
+     vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+        config = config or {}
+        config.border = "rounded"
+        return vim.lsp.handlers.hover(err, result, ctx, config)
+      end
 
-                  formatting = {
-                    command = { "alejandra" },
-                  },
+      require("blink.cmp").setup({
+        keymap = {
+          preset = "default",
+          ["<CR>"] = { "accept", "fallback" },
+        },
 
-                  options = {
-                    nixos = {
-                      expr = '(builtins.getFlake (toString ./.)).nixosConfigurations.<name>.options',
-                    },
-                    ["home-manager"] = {
-                      expr = '(builtins.getFlake (toString ./.)).homeConfigurations."<user>@<host>".options',
-                    },
-                  },
+        appearance = {
+          nerd_font_variant = "mono",
+        },
 
-                  diagnostic = {
-                    suppress = {
-                      "sema-extra-with",
-                    },
-                  },
-                },
-              },
-            })
+        completion = {
+          documentation = {
+            auto_show = true,
+            auto_show_delay_ms = 200,
+          },
+        },
 
-                  vim.lsp.config("rust_analyzer", {
-                    cmd = { "rust-analyzer" },
-                    filetypes = { "rust" },
-                    root_markers = { "Cargo.toml", ".git" },
-                  })
+        sources = {
+          default = { "lsp", "path", "snippets", "buffer" },
+        },
 
-                  vim.lsp.config("gopls", {
-                    cmd = { "gopls" },
-                    filetypes = { "go" },
-                    root_markers = { "go.mod", ".git" },
-                  })
+        fuzzy = {
+          implementation = "prefer_rust_with_warning",
+        },
+      })
 
-                  vim.lsp.config("pyright", {
-                    cmd = { "pyright-langserver", "--stdio" },
-                    filetypes = { "python" },
-                    root_markers = { "pyproject.toml", "setup.py", ".git" },
-                  })
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-                  vim.lsp.config("jdtls", {
-                    cmd = { "jdtls" },
-                    filetypes = { "java" },
-                    root_markers = { "pom.xml", "build.gradle", ".git" },
-                  })
+      local function cfg(opts)
+        opts.capabilities = capabilities
+        return opts
+      end
 
-                  vim.lsp.config("hls", {
-                    cmd = { "haskell-language-server-wrapper", "--lsp" },
-                    filetypes = { "haskell", "lhaskell" },
-                    root_markers = { "stack.yaml", "cabal.project", ".git" },
-                  })
+     vim.lsp.config("nixd", cfg({
+        cmd = { "nixd" },
+        filetypes = { "nix" },
+        root_markers = { "flake.nix", ".git" },
+      }))
 
-                  vim.lsp.config("tinymist", {
-                    cmd = { "tinymist" },
-                    filetypes = { "typst" },
-                    root_markers = { ".git" },
-                  })
+      vim.lsp.config("rust_analyzer", cfg({
+        cmd = { "rust-analyzer" },
+        filetypes = { "rust" },
+        root_markers = { "Cargo.toml", ".git" },
+      }))
 
-                  vim.lsp.config("sqls", {
-                    cmd = { "sqls" },
-                    filetypes = { "sql" },
-                    root_markers = { ".git" },
-                  })
+      vim.lsp.config("gopls", cfg({
+        cmd = { "gopls" },
+        filetypes = { "go" },
+        root_markers = { "go.mod", ".git" },
+      }))
 
-                  vim.lsp.enable({
-                    "nixd",
-                    "rust_analyzer",
-                    "gopls",
-                    "pyright",
-                    "jdtls",
-                    "hls",
-                    "tinymist",
-                    "sqls",
-                  })
+      vim.lsp.config("pyright", cfg({
+        cmd = { "pyright-langserver", "--stdio" },
+        filetypes = { "python" },
+        root_markers = { "pyproject.toml", "setup.py", ".git" },
+      }))
 
-                  vim.api.nvim_create_autocmd("LspAttach", {
-                    callback = function(ev)
-                      local opts = { buffer = ev.buf, silent = true }
+      vim.lsp.config("jdtls", cfg({
+        cmd = { "jdtls" },
+        filetypes = { "java" },
+        root_markers = { "pom.xml", "build.gradle", ".git" },
+      }))
 
-                      vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                      vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-                      vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+      vim.lsp.config("hls", cfg({
+        cmd = { "haskell-language-server-wrapper", "--lsp" },
+        filetypes = { "haskell", "lhaskell" },
+        root_markers = { "stack.yaml", "cabal.project", ".git" },
+      }))
 
-                      vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+      vim.lsp.config("tinymist", cfg({
+        cmd = { "tinymist" },
+        filetypes = { "typst" },
+        root_markers = { ".git" },
+      }))
 
-                      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-                      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+      vim.lsp.config("sqls", cfg({
+        cmd = { "sqls" },
+        filetypes = { "sql" },
+        root_markers = { ".git" },
+      }))
 
-                      vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-                      vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-                      vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+      vim.lsp.enable({
+        "nixd",
+        "rust_analyzer",
+        "gopls",
+        "pyright",
+        "jdtls",
+        "hls",
+        "tinymist",
+        "sqls",
+      })
 
-                      vim.keymap.set("n", "<leader>f", function()
-                        vim.lsp.buf.format({ async = true })
-                      end, opts)
-                    end,
-                  })
+     vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+          local opts = { buffer = ev.buf, silent = true }
+
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+
+          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+          vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+
+          vim.keymap.set("n", "<leader>f", function()
+            vim.lsp.buf.format({ async = true })
+          end, opts)
+        end,
+      })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
@@ -139,11 +158,6 @@
           if not client then return end
 
           if client:supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({
-              event = "BufWritePre",
-              buffer = ev.buf,
-            })
-
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = ev.buf,
               callback = function()
@@ -153,6 +167,7 @@
           end
         end,
       })
+
     '';
   };
 }

@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./lsp.nix
+    ./ui.nix
   ];
 
   programs.neovim = {
