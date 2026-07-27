@@ -55,6 +55,11 @@
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         force_default_wallpaper = 0;
+        vrr = 1;
+      };
+
+      xwayland = {
+        force_zero_scaling = true;
       };
 
       exec-once = [

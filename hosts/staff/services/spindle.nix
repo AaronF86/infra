@@ -22,5 +22,15 @@
     };
   };
 
+  systemd.services.spindle = {
+    after = ["openbao-proxy.service"];
+    wants = ["openbao-proxy.service"];
+    serviceConfig = {
+      RestartSec = "10";
+      # Wait for openbao-proxy to authenticate and write its token before starting
+      ExecStartPre = "/bin/sh -c 'until [ -s /var/lib/openbao/token ]; do sleep 2; done'";
+    };
+  };
+
   networking.firewall.interfaces.wg0.allowedTCPPorts = [6555];
 }

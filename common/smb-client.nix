@@ -7,7 +7,7 @@
   boot.supportedFilesystems = ["cifs"];
 
   fileSystems."/mnt/storage" = {
-    device = "//192.168.1.116/storage";
+    device = "//192.168.1.112/storage";
     fsType = "cifs";
     options = [
       "guest"
@@ -18,8 +18,6 @@
       "dir_mode=0777"
       "_netdev"
       "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=10min"
       "noatime"
     ];
   };

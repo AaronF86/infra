@@ -53,6 +53,7 @@
     vim
   ];
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = ["pnpm-10.29.2"];
 
   nix = {
     settings = {
@@ -84,5 +85,16 @@
     ];
     allowReboot = false;
   };
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      hinfo = true;
+    };
+  };
+
+  programs.nix-ld.enable = true;
   system.stateVersion = "26.05";
 }

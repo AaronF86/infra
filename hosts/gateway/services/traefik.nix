@@ -71,6 +71,7 @@
           service = "staff-files";
           tls.certResolver = "letsencrypt";
         };
+
       };
 
       services = {
@@ -97,6 +98,7 @@
         knot.loadBalancer.servers = [
           {url = "http://10.44.0.3:5555";}
         ];
+
       };
     };
   };

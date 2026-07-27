@@ -90,7 +90,7 @@ in {
 
       store.postgresql = {
         type = "postgresql";
-        host = "192.168.1.116";
+        host = "192.168.1.112";
         port = 5432;
 
         database = "stalwart";

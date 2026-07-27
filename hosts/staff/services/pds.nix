@@ -31,7 +31,7 @@
 
   systemd.services.bluesky-pds = {
     after = ["mnt-storage.mount" "systemd-tmpfiles-setup.service" "systemd-tmpfiles-resetup.service"];
-    wants = ["mnt-storage.mount"];
+    requires = ["mnt-storage.mount"];
     serviceConfig.ReadWritePaths = [
       "/mnt/storage/pds"
       "/var/lib/bluesky-pds"

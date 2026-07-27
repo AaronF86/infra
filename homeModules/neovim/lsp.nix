@@ -11,7 +11,7 @@
     haskell-language-server
     tinymist
     sqls
-    nodejs
+    nodejs_22
   ];
 
   programs.neovim = {

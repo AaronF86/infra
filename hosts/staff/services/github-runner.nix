@@ -39,7 +39,7 @@
         unzip
         zip
         jq
-        nodejs
+        nodejs_22
         docker
       ];
     };

@@ -18,8 +18,13 @@
   };
 
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelModules = ["vhost_vsock"];
   networking = {
     hostName = "staff";
     useDHCP = true;
   };
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "pnpm-9.15.9"
+  ];
 }

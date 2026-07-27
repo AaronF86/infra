@@ -13,7 +13,7 @@
         height = 36;
         output = ["*"];
 
-        modules-left = ["custom/logo" "sway/workspaces"];
+        modules-left = ["custom/logo" "hyprland/workspaces"];
         modules-right = [
           "pulseaudio"
           "bluetooth"
@@ -34,7 +34,7 @@
           tooltip = false;
           on-click = "flameshot gui";
         };
-        "sway/workspaces" = {
+        "hyprland/workspaces" = {
           disable-scroll = true;
           all-outputs = false;
           format = "{name}";

@@ -38,6 +38,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
   };
 
   outputs = inputs @ {
@@ -75,7 +76,7 @@
       desktop = mkHost {
         system = "x86_64-linux";
 
-        deployment.targetHost = "192.168.1.216";
+        deployment.targetHost = "desktop";
 
         modules = [
           disko.nixosModules.disko
@@ -100,7 +101,7 @@
       framework13 = mkHost {
         system = "x86_64-linux";
 
-        deployment.targetHost = "192.168.1.193";
+        deployment.targetHost = "framework13";
 
         modules = [
           disko.nixosModules.disko
@@ -126,7 +127,7 @@
       grimoire = mkHost {
         system = "aarch64-linux";
 
-        deployment.targetHost = "192.168.1.116";
+        deployment.targetHost = "grimoire";
 
         modules = [
           friendlyelecCM3588.nixosModules.cm3588
@@ -142,7 +143,7 @@
       staff = mkHost {
         system = "x86_64-linux";
 
-        deployment.targetHost = "192.168.1.243";
+        deployment.targetHost = "staff";
 
         modules = [
           sops-nix.nixosModules.sops
@@ -157,9 +158,7 @@
           ./hosts/staff/services/pds.nix
           ./hosts/staff/services/knot.nix
           ./hosts/staff/services/spindle.nix
-          ./hosts/staff/services/minecraft-forge.nix
           ./hosts/staff/services/stalwart.nix
-          ./hosts/staff/services/github-runner.nix
 
           ./hosts/staff/services/openbao/openbao.nix
           ./hosts/staff/services/openbao/proxy.nix
