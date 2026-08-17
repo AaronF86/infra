@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
   imports = [
     ./../modules/loginManagers/ly.nix
     ./../modules/DesktopEnvironments/river.nix
@@ -7,6 +7,4 @@
   ];
 
   programs.direnv.enable = true;
-
-  environment.systemPackages = [pkgs.soft-serve];
 }

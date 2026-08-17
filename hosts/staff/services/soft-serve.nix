@@ -85,6 +85,7 @@ in {
         public_url = "https://git.aaronf86.tech";
       };
       anon_access = "read-only";
+      jobs.mirror_pull = "@every 10m";
     };
   };
 

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   services.haproxy = {
     enable = true;
 

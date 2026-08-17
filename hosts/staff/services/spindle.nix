@@ -1,4 +1,4 @@
-{...}: {
+_: {
   services.tangled.spindle = {
     enable = true;
     server = {

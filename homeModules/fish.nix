@@ -11,6 +11,9 @@
         nix-your-shell fish | source
       end
     '';
+    shellAliases = {
+      soft = "ssh -p 23231 git.aaronf86.tech";
+    };
     plugins = [
       {
         name = "tide";

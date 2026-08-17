@@ -23,6 +23,7 @@
   };
 
   imports = [
+    ./fish.nix
     ./river/default.nix
     ./ghostty.nix
     ./git.nix

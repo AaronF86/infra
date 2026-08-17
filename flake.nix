@@ -166,7 +166,6 @@
           ./hosts/staff/services/openbao/openbao.nix
           ./hosts/staff/services/openbao/proxy.nix
           ./hosts/staff/services/pterodactyl.nix
-          ./hosts/staff/services/forgejo.nix
           ./hosts/staff/services/git-mirror.nix
           ./hosts/staff/services/knot-mirror.nix
         ];
