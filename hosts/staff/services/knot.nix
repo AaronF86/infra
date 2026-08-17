@@ -23,6 +23,7 @@ _: {
 
   systemd.tmpfiles.rules = [
     "d /var/lib/knot 0750 git git -"
+    "z /var/lib/knot/git 0750 git git -"
   ];
 
   networking.firewall = {
