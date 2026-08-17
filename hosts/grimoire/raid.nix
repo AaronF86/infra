@@ -1,4 +1,4 @@
-{lib, ...}: {
+{...}: {
   boot.supportedFilesystems = ["btrfs"];
 
   services.btrfs = {

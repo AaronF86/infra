@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{...}: {
   imports = [
     ./loginManagers/ly.nix
     ./DesktopEnvironments/hyprland.nix

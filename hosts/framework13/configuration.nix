@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  commonArgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../../common/base.nix
     ./hardware-configuration.nix

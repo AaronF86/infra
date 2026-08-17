@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{config, ...}: let
   rootDomain = "aaronf86.tech";
   mailDomain = "notify.${rootDomain}";
   mxHost = "mail.${mailDomain}";

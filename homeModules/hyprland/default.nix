@@ -1,10 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  meta,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./binds.nix
     ./hyprpaper.nix
@@ -55,7 +49,7 @@
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         force_default_wallpaper = 0;
-        vrr = 1;
+        vrr = 0;
       };
 
       xwayland = {

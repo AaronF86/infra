@@ -1,5 +1,4 @@
 {
-  lib,
   config,
   pkgs,
   ...
@@ -29,7 +28,7 @@
       printf '%s\n' "$PRIVATE_KEY" > /run/wireguard-staff-private
     '';
     postStart = ''
-      ${pkgs.wireguard-tools}/bin/wg set wg0 peer "UPMC/vvDY8/kbvHTWOth59ulj0KG3UTbLMbY3kJxUC0=" allowed-ips 10.44.0.1/32 endpoint 46.224.126.188:51820 persistent-keepalive 25
+      ${pkgs.wireguard-tools}/bin/wg set wg0 peer "UPMC/vvDY8/kbvHTWOth59ulj0KG3UTbLMbY3kJxUC0=" allowed-ips 10.44.0.1/32 endpoint 51.68.220.132:51820 persistent-keepalive 25
     '';
   };
 }

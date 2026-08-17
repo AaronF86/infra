@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   programs.direnv = {
     enable = true;
   };
@@ -18,7 +14,7 @@
     plugins = [
       {
         name = "tide";
-        src = pkgs.fishPlugins.tide.src;
+        inherit (pkgs.fishPlugins.tide) src;
       }
     ];
   };

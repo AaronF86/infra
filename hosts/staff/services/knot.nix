@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{...}: {
   services.tangled.knot = {
     enable = true;
     stateDir = "/var/lib/knot/git";

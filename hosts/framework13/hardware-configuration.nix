@@ -3,26 +3,23 @@
   pkgs,
   ...
 }: {
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi";
-    };
-    grub = {
-      enable = true;
-      efiSupport = true;
-      device = "nodev";
-      useOSProber = true;
-    };
-  };
-
-  boot.supportedFilesystems = ["btrfs"];
-
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 10;
-  };
-
   boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+      grub = {
+        enable = true;
+        efiSupport = true;
+        device = "nodev";
+        useOSProber = true;
+      };
+    };
+    supportedFilesystems = ["btrfs"];
+    kernel.sysctl = {
+      "vm.swappiness" = 10;
+    };
     kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = ["amd_pstate=active"];
     blacklistedKernelModules = ["k10temp"];
@@ -40,13 +37,11 @@
 
   services = {
     tlp.enable = true;
-
     xserver = {
       enable = true;
       videoDrivers = ["amdgpu"];
       libinput.enable = true;
     };
-
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -54,7 +49,6 @@
       pulse.enable = true;
       jack.enable = true;
     };
-
     fprintd.enable = true;
     fstrim = {
       enable = true;

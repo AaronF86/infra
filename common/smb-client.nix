@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+_: {
   boot.supportedFilesystems = ["cifs"];
 
   fileSystems."/mnt/storage" = {

@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    river-next = {
+      url = "github:dmkhitaryan/river-next-nix-module";
+      flake = false;
+    };
+
     colmena.url = "github:zhaofengli/colmena/release-0.4.x";
 
     tangled = {
@@ -38,7 +43,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
   outputs = inputs @ {
@@ -53,7 +57,7 @@
     zen-browser,
     ...
   }: let
-    lib = nixpkgs.lib;
+    inherit (nixpkgs) lib;
 
     systems = [
       "x86_64-linux"
@@ -158,10 +162,13 @@
           ./hosts/staff/services/pds.nix
           ./hosts/staff/services/knot.nix
           ./hosts/staff/services/spindle.nix
-          ./hosts/staff/services/stalwart.nix
 
           ./hosts/staff/services/openbao/openbao.nix
           ./hosts/staff/services/openbao/proxy.nix
+          ./hosts/staff/services/pterodactyl.nix
+          ./hosts/staff/services/forgejo.nix
+          ./hosts/staff/services/git-mirror.nix
+          ./hosts/staff/services/knot-mirror.nix
         ];
       };
 
@@ -169,7 +176,7 @@
         system = "x86_64-linux";
 
         deployment = {
-          targetHost = "46.224.126.188";
+          targetHost = "51.68.220.132";
         };
 
         modules = [
@@ -196,21 +203,21 @@
       tangled-pkgs = tangled.packages.${system};
     };
 
-    mkSystem = name: host:
+    mkSystem = _name: host:
       lib.nixosSystem {
         inherit (host) system;
 
         specialArgs = mkSpecialArgs host.system;
 
-        modules = host.modules;
+        inherit (host) modules;
       };
 
-    mkColmenaHost = name: host: {
+    mkColmenaHost = _name: host: {
       deployment = {
-        targetHost = host.deployment.targetHost;
-        targetPort = host.targetPort;
-        targetUser = host.targetUser;
-        buildOnTarget = host.buildOnTarget;
+        inherit (host.deployment) targetHost;
+        inherit (host) targetPort;
+        inherit (host) targetUser;
+        inherit (host) buildOnTarget;
       };
 
       nixpkgs.hostPlatform = host.system;

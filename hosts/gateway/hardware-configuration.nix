@@ -3,9 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 # /tmp/my-hetzner-vm/hardware-configuration.nix
 {
-  config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {

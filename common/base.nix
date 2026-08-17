@@ -1,5 +1,4 @@
 {
-  lib,
   commonArgs,
   pkgs,
   ...
@@ -38,11 +37,6 @@
     wheelNeedsPassword = false;
   };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
   time.timeZone = "Europe/London";
 
   environment.systemPackages = with pkgs; [
@@ -57,6 +51,10 @@
 
   nix = {
     settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
 
       warn-dirty = false;

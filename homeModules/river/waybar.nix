@@ -5,7 +5,7 @@
     settings = {
       mainBar = {
         layer = "top";
-        position = "top";
+        position = "bottom";
         height = 36;
         output = ["*"];
 
@@ -15,34 +15,32 @@
           "bluetooth"
           "network"
           "custom/vpn"
-          "custom/flameshot"
+          "custom/grimblast"
           "battery"
           "clock"
         ];
 
         "custom/logo" = {
-          format = "";
+          format = "";
           tooltip = false;
           on-click = "bemenu-run --accept-single -n -p 'Launch'";
         };
-        "custom/flameshot" = {
+        "custom/grimblast" = {
           format = "󰹑";
           tooltip = false;
-          on-click = "flameshot gui";
+          on-click = "grimblast copy area";
         };
         "hyprland/workspaces" = {
-          disable-scroll = true;
+          format = "{id}";
+          on-click = "activate";
+          sort-by-number = true;
           all-outputs = false;
-          format = "{name}";
-          format-icons = {
-            "1" = "1";
-            "2" = "2";
-            "3" = "3";
-            "4" = "4";
-            "5" = "5";
-            "6" = "6";
-            "7" = "7";
-            "default" = "";
+          persistent-workspaces = {
+            "1" = ["DP-1"];
+            "2" = ["DP-1"];
+            "3" = ["DP-1"];
+            "4" = ["DP-1"];
+            "5" = ["HDMI-A-1"];
           };
         };
 
@@ -107,7 +105,7 @@
         "battery" = {
           format = "{icon} {capacity}%";
           format-charging = "󰂄 {capacity}%";
-          format-icons = ["" "" "" "" ""];
+          format-icons = ["" "" "" "" ""];
           interval = 30;
           tooltip = false;
         };
@@ -132,7 +130,7 @@
 
       window#waybar {
         background: #282c34;
-        border-bottom: 2px solid #51afef;
+        border-top: 2px solid #51afef;
         padding: 0 8px;
       }
 
@@ -154,15 +152,15 @@
 
         color: #bbc2cf;
         background: transparent;
-
-        transition:
-          background-color 0.2s ease,
-          color 0.2s ease;
       }
 
-      #workspaces button.focused {
+      #workspaces button.active {
         background: #51afef;
         color: #282c34;
+      }
+
+      #workspaces button.occupied {
+        color: #98be65;
       }
 
       #workspaces button.urgent {
@@ -215,11 +213,40 @@
       #clock {
         color: #c678dd;
       }
-      #custom-flameshot {
+      #custom-grimblast {
         padding: 0 8px;
         color: #e5c07b;
       }
     '';
+  };
+
+  home.file = {
+    ".config/waybar/scripts/vpn-status.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        vpn=$(nmcli -t -f TYPE,STATE con show --active 2>/dev/null | grep -E "^(vpn|wireguard):" | head -1)
+        if [ -n "$vpn" ]; then
+          name=$(nmcli -t -f NAME,TYPE,STATE con show --active 2>/dev/null | grep -E ":(vpn|wireguard):activated" | cut -d: -f1 | head -1)
+          echo "{\"text\":\"󰒄 VPN\",\"class\":\"connected\",\"tooltip\":\"Connected: $name\"}"
+        else
+          echo "{\"text\":\"󰒅 VPN\",\"class\":\"disconnected\",\"tooltip\":\"VPN disconnected\"}"
+        fi
+      '';
+    };
+    ".config/waybar/scripts/vpn-toggle.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        vpn=$(nmcli -t -f NAME,TYPE,STATE con show --active 2>/dev/null | grep -E ":(vpn|wireguard):activated" | cut -d: -f1 | head -1)
+        if [ -n "$vpn" ]; then
+          nmcli con down "$vpn"
+        else
+          first=$(nmcli -t -f NAME,TYPE con show 2>/dev/null | grep -E ":(vpn|wireguard)$" | cut -d: -f1 | head -1)
+          [ -n "$first" ] && nmcli con up "$first"
+        fi
+      '';
+    };
   };
 
   fonts.fontconfig.enable = true;

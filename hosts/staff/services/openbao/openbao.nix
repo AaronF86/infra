@@ -1,10 +1,5 @@
 # Credit: This module is lifted from https://tangled.org/tangled.org/infra/blob/master/hosts/spindle/services/openbao/openbao.nix
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   # Create openbao user and group
   users.groups.openbao = {};
 

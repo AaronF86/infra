@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{...}: {
   programs.git = {
     enable = true;
     settings = {
@@ -32,21 +28,21 @@
     ];
   };
 
-  home.file.".config/git/github.conf".text = ''
-    [user]
-      name = Aaron Fulton
-      email = dev@aaronf86.tech
-  '';
-
-  home.file.".config/git/gitlab.conf".text = ''
-    [user]
-      name = Aaron Fulton
-      email = dev@aaronf86.tech
-  '';
-
-  home.file.".config/git/gitlab-strath.conf".text = ''
-    [user]
-      name = Aaron Fulton
-      email = aaron.fulton.2024@uni.strath.ac.uk
-  '';
+  home.file = {
+    ".config/git/github.conf".text = ''
+      [user]
+        name = Aaron Fulton
+        email = dev@aaronf86.tech
+    '';
+    ".config/git/gitlab.conf".text = ''
+      [user]
+        name = Aaron Fulton
+        email = dev@aaronf86.tech
+    '';
+    ".config/git/gitlab-strath.conf".text = ''
+      [user]
+        name = Aaron Fulton
+        email = aaron.fulton.2024@uni.strath.ac.uk
+    '';
+  };
 }

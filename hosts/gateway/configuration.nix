@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-} @ args: {
+{...}: {
   imports = [
     ../../common/base.nix
     ./hardware-configuration.nix

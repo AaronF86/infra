@@ -1,9 +1,4 @@
-{
-  pkgs,
-  zen-browser,
-  config,
-  ...
-}: {
+{zen-browser, ...}: {
   imports = [
     zen-browser.homeModules.twilight
   ];

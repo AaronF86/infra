@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+_: {
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
 
@@ -41,7 +37,6 @@
       "$mod CTRL, L, moveoutofgroup, r"
       "$mod CTRL, H, moveoutofgroup, l"
 
-      # Workspace binds
       "$mod, 1, workspace,  1"
       "$mod, 2, workspace,  2"
       "$mod, 3, workspace,  3"
@@ -52,7 +47,6 @@
       "$mod SHIFT, 3, movetoworkspace, 3"
       "$mod SHIFT, 4, movetoworkspace, 4"
 
-      # Wallpaper controls
       "$mod, W, exec, hyprctl hyprpaper wallpaper \"DP-2,$(find ~/Pictures/wallpapers -type f | shuf -n 1)\""
       "$mod SHIFT, W, exec, hyprctl hyprpaper wallpaper \"HDMI-A-2,$(find ~/Pictures/wallpapers -type f | shuf -n 1)\""
       "$mod CTRL, W, exec, hyprctl hyprpaper wallpaper \"HDMI-A-1,$(find ~/Pictures/wallpapers -type f | shuf -n 1)\""
@@ -69,7 +63,6 @@
       ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
     ];
 
-    # Non-repeating media binds
     bindl = [
       ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       ", XF86AudioPlay, exec, playerctl play-pause"

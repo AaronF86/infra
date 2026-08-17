@@ -1,14 +1,13 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+_: {
   services.dunst = {
     enable = true;
     settings = {
       global = {
         monitor = 1;
-        geometry = "300x5-30+20";
+        width = 300;
+        height = 200;
+        offset = "30x20";
+        origin = "top-right";
         transparency = 10;
         frame_color = "#eceff1";
         frame_width = 3;

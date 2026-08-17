@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{...}: {
   services.displayManager.ly.enable = true;
   services.displayManager.ly.settings = {
     asterisk = ".";

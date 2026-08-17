@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{...}: {
   services.tangled.spindle = {
     enable = true;
     server = {
