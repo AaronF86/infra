@@ -14,6 +14,12 @@
     shellAliases = {
       soft = "ssh -p 23231 git.aaronf86.tech";
     };
+    functions = {
+      ns = {
+        body = ''nix shell (printf 'nixpkgs#%s\n' $argv)'';
+        description = "nix shell nixpkgs#<pkg>";
+      };
+    };
     plugins = [
       {
         name = "tide";
