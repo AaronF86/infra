@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./../modules/loginManagers/ly.nix
-    ./../modules/DesktopEnvironments/river.nix
+    ./../modules/DesktopEnvironments/hyprland.nix
     ./../modules/bluetooth.nix
     ./smb-client.nix
   ];

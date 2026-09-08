@@ -188,6 +188,7 @@
           ./hosts/gateway/services/traefik.nix
           ./hosts/gateway/services/haproxy.nix
           ./hosts/gateway/services/nftables.nix
+          ./hosts/gateway/services/smtp-relay.nix
         ];
       };
     };
@@ -230,7 +231,7 @@
 
     packages = forAllSystems (
       system: {
-        inherit (colmena.packages.${system}) colmena;
+        inherit (nixpkgs.legacyPackages.${system}) colmena;
       }
     );
 
@@ -238,7 +239,7 @@
       system: {
         colmena = {
           type = "app";
-          program = "${colmena.packages.${system}.colmena}/bin/colmena";
+          program = "${nixpkgs.legacyPackages.${system}.colmena}/bin/colmena";
         };
       }
     );

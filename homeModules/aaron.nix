@@ -24,12 +24,12 @@
 
   imports = [
     ./fish.nix
-    ./river/default.nix
+    ./hyprland/default.nix
     ./ghostty.nix
     ./git.nix
     ./ssh.nix
     ./neovim/default.nix
     ./zen.nix
-    ./river/monitors/desktop.nix
+    ./hyprland/monitors/desktop.nix
   ];
 }

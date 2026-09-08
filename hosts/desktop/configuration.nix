@@ -26,6 +26,7 @@
     acpi
     vintagestory
     heroic
+    thunderbird
   ];
 
   programs.steam = {

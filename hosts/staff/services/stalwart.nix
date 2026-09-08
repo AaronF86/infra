@@ -1,4 +1,4 @@
-{config, ...}: let
+{config, lib, ...}: let
   rootDomain = "aaronf86.tech";
   mailDomain = "notify.${rootDomain}";
   mxHost = "mail.${mailDomain}";
@@ -7,8 +7,8 @@ in {
 
   sops.secrets = {
     stalwart-admin-pw = {
-      sopsFile = ../../../secrets/stalwart.env.enc;
-      format = "dotenv";
+      sopsFile = ../../../secrets/stalwart.json.enc;
+      format = "json";
       key = "ADMIN_PASSWORD";
       owner = "stalwart";
       group = "stalwart";
@@ -16,8 +16,8 @@ in {
     };
 
     stalwart-mail-pw = {
-      sopsFile = ../../../secrets/stalwart.env.enc;
-      format = "dotenv";
+      sopsFile = ../../../secrets/stalwart.json.enc;
+      format = "json";
       key = "MAIL_PASSWORD";
       owner = "stalwart";
       group = "stalwart";
@@ -25,12 +25,37 @@ in {
     };
 
     stalwart-db-password = {
-      sopsFile = ../../../secrets/stalwart.env.enc;
-      format = "dotenv";
+      sopsFile = ../../../secrets/stalwart.json.enc;
+      format = "json";
       key = "POSTGRES_PASSWORD";
       owner = "stalwart";
       group = "stalwart";
       mode = "0400";
+    };
+
+    stalwart-dkim-key = {
+      sopsFile = ../../../secrets/stalwart-dkim.json.enc;
+      format = "json";
+      key = "DKIM_PRIVATE_KEY";
+      owner = "stalwart";
+      group = "stalwart";
+      mode = "0400";
+    };
+
+    cloudflare-token = {
+      sopsFile = ../../../secrets/cloudflare-staff.json.enc;
+      format = "json";
+      key = "CF_DNS_API_TOKEN";
+    };
+  };
+
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "admin@${mailDomain}";
+    certs.${mxHost} = {
+      dnsProvider = "cloudflare";
+      credentialFiles."CF_DNS_API_TOKEN_FILE" = config.sops.secrets.cloudflare-token.path;
+      group = "stalwart";
     };
   };
 
@@ -47,27 +72,25 @@ in {
 
           ip-blocking = false;
         };
-        tls = {
-          enable = true;
-          implicit = true;
-        };
-
         listener = {
           smtp = {
             protocol = "smtp";
             bind = "[::]:25";
+            proxy.trusted-networks = ["10.44.0.1/32"];
           };
 
           submissions = {
             bind = "[::]:465";
             protocol = "smtp";
             tls.implicit = true;
+            proxy.trusted-networks = ["10.44.0.1/32"];
           };
 
           imaps = {
             bind = "[::]:993";
             protocol = "imap";
             tls.implicit = true;
+            proxy.trusted-networks = ["10.44.0.1/32"];
           };
 
           jmap = {
@@ -97,11 +120,40 @@ in {
         max-connections = 10;
       };
 
+      signature.notify = {
+        algorithm = "rsa-sha256";
+        private-key = "%{file:${config.sops.secrets.stalwart-dkim-key.path}}%";
+        domain = mailDomain;
+        selector = "mail";
+        headers = ["From" "To" "Date" "Subject" "Message-ID"];
+        canonicalization = "relaxed/relaxed";
+        expire = "7d";
+        set-body-length = false;
+        report = false;
+      };
+
+      certificate.default = {
+        cert = "%{file:/var/lib/acme/${mxHost}/cert.pem}%";
+        private-key = "%{file:/var/lib/acme/${mxHost}/key.pem}%";
+      };
+
       authentication.fallback-admin = {
         user = "admin";
 
         secret = "%{file:${config.sops.secrets.stalwart-admin-pw.path}}%";
       };
+
+      gateway.gateway-relay = {
+        address = "10.44.0.1";
+        port = 2525;
+        protocol = "smtp";
+        tls.enable = false;
+        auth.enable = false;
+      };
+
+      queue.strategy.route = "'gateway-relay'";
+
+      session.data.sign = ["'notify'"];
     };
   };
 

@@ -21,7 +21,15 @@
           };
         };
 
-        websecure.address = ":443";
+        websecure = {
+          address = ":443";
+          http = {
+            tls.options = "modern";
+            middlewares = ["hsts@file"];
+          };
+        };
+
+        wings-sftp.address = ":2022";
       };
 
       api = {
@@ -39,6 +47,36 @@
       };
     };
 
+    dynamicConfigOptions.http.middlewares.hsts.headers = {
+      stsSeconds = 31536000;
+      stsIncludeSubdomains = true;
+      stsPreload = true;
+    };
+
+    dynamicConfigOptions.tls.options.modern = {
+      minVersion = "VersionTLS12";
+      cipherSuites = [
+        "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305"
+        "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+      ];
+      sniStrict = true;
+    };
+
+    dynamicConfigOptions.tcp = {
+      routers.wings-sftp = {
+        entryPoints = ["wings-sftp"];
+        rule = "HostSNI(`*`)";
+        service = "wings-sftp";
+      };
+      services.wings-sftp.loadBalancer.servers = [
+        {address = "10.44.0.3:2022";}
+      ];
+    };
+
     dynamicConfigOptions.http = {
       routers = {
         spindle = {
@@ -47,13 +85,6 @@
           service = "spindle";
           tls.certResolver = "letsencrypt";
         };
-        mailadmin = {
-          entryPoints = ["websecure"];
-          rule = "Host(`webadmin.notify.aaronf86.tech`)";
-          service = "mailadmin";
-          tls.certResolver = "letsencrypt";
-        };
-
         mail = {
           entryPoints = ["websecure"];
           rule = "Host(`mail.notify.aaronf86.tech`)";
@@ -109,10 +140,6 @@
           {url = "http://10.44.0.3:6555";}
         ];
 
-        mailadmin.loadBalancer.servers = [
-          {url = "http://10.44.0.3:8081";}
-        ];
-
         mail.loadBalancer.servers = [
           {url = "http://10.44.0.3:8080";}
         ];
@@ -152,5 +179,6 @@
   networking.firewall.allowedTCPPorts = [
     80
     443
+    2022
   ];
 }

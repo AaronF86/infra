@@ -1,10 +1,11 @@
-{...}: {
+{lib, ...}: {
   imports = [
     ../../common/base.nix
     ../../common/smb-client.nix
     ./hardware-configuration.nix
     ./services/tunnel.nix
     ./services/soft-serve.nix
+    ./services/stalwart.nix
   ];
 
   boot = {
@@ -23,6 +24,8 @@
     hostName = "staff";
     useDHCP = true;
   };
+
+  services.openssh.settings.AllowTcpForwarding = lib.mkForce "local";
 
   nixpkgs.config.permittedInsecurePackages = [
     "pnpm-9.15.9"
