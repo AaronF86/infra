@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   home = {
     username = "aaron";
     homeDirectory = "/home/aaron";
@@ -12,6 +12,9 @@
       prismlauncher
 
       # Development Tools
+      haskellPackages.ghc
+      haskellPackages.cabal-install
+      ormolu
       clang-tools
       nil # Nix LSP
       nixpkgs-fmt # Nix formatter
@@ -23,6 +26,7 @@
   };
 
   imports = [
+    ./tmux.nix
     ./fish.nix
     ./hyprland/default.nix
     ./ghostty.nix

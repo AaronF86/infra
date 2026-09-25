@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
+  xdg.configFile."nvim/snippets/nix.json".source = ./snippets/nix.json;
   home.packages = with pkgs; [
     nixd
     alejandra
@@ -11,6 +12,9 @@
     tinymist
     sqls
     nodejs_22
+
+    fd
+    tree-sitter
   ];
 
   programs.neovim = {
@@ -19,12 +23,25 @@
 
       blink-cmp
       friendly-snippets
-      nvim-treesitter
+      (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [
+        regex
+        bash
+        c lua vim vimdoc markdown markdown_inline
+        nix rust go python java haskell
+        typst sql
+        json toml yaml
+      ]))
       nvim-autopairs
       copilot-vim
     ];
 
     initLua = ''
+
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function(ev)
+          pcall(vim.treesitter.start, ev.buf)
+        end,
+      })
 
       require("nvim-autopairs").setup({
          check_ts = true,
@@ -55,10 +72,17 @@
 
          sources = {
            default = { "lsp", "path", "snippets", "buffer" },
+           providers = {
+             snippets = {
+               opts = {
+                 search_paths = { vim.fn.stdpath("config") .. "/snippets" },
+               },
+             },
+           },
          },
 
          fuzzy = {
-           implementation = "prefer_rust_with_warning",
+           implementation = "prefer_rust",
          },
        })
 
@@ -103,6 +127,12 @@
          cmd = { "haskell-language-server-wrapper", "--lsp" },
          filetypes = { "haskell", "lhaskell" },
          root_markers = { "stack.yaml", "cabal.project", ".git" },
+         settings = {
+           haskell = {
+             formattingProvider = "ormolu",
+             hlintOn = true,
+           },
+         },
        }))
 
        vim.lsp.config("tinymist", cfg({

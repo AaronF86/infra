@@ -13,6 +13,9 @@ _: {
       "dir_mode=0777"
       "_netdev"
       "nofail"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=60"
       "noatime"
     ];
   };

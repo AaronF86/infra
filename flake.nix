@@ -153,7 +153,6 @@
           sops-nix.nixosModules.sops
 
           tangled.nixosModules.knot
-          tangled.nixosModules.spindle
 
           ./hosts/staff/configuration.nix
 
@@ -161,10 +160,6 @@
           ./hosts/staff/services/files.nix
           ./hosts/staff/services/pds.nix
           ./hosts/staff/services/knot.nix
-          ./hosts/staff/services/spindle.nix
-
-          ./hosts/staff/services/openbao/openbao.nix
-          ./hosts/staff/services/openbao/proxy.nix
           ./hosts/staff/services/pterodactyl.nix
           ./hosts/staff/services/git-mirror.nix
           ./hosts/staff/services/knot-mirror.nix

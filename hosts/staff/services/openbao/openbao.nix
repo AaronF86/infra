@@ -1,5 +1,10 @@
 # Credit: This module is lifted from https://tangled.org/tangled.org/infra/blob/master/hosts/spindle/services/openbao/openbao.nix
-{lib, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # Create openbao user and group
   users.groups.openbao = {};
 
@@ -16,6 +21,31 @@
       DynamicUser = lib.mkForce false;
       User = "openbao";
       Group = "openbao";
+    };
+  };
+
+  sops.secrets.openbao-unseal-key = {
+    sopsFile = ../../../../secrets/openbao-unseal-key.txt.enc;
+    format = "binary";
+    mode = "0400";
+  };
+
+  systemd.services.openbao-unseal = {
+    description = "Unseal OpenBao after startup";
+    after = ["openbao.service"];
+    wants = ["openbao.service"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "openbao-unseal" ''
+        KEY=$(cat "${config.sops.secrets.openbao-unseal-key.path}")
+        if [ -z "$KEY" ] || [ "$KEY" = "PLACEHOLDER" ]; then
+          echo "openbao-unseal-key is not set, skipping auto-unseal"
+          exit 0
+        fi
+        ${pkgs.openbao}/bin/bao operator unseal "$KEY" || true
+      '';
     };
   };
 
