@@ -23,6 +23,9 @@
   networking = {
     hostName = "staff";
     useDHCP = true;
+    hosts = {
+      "192.168.1.115" = ["grimoire"];
+    };
   };
 
   services.openssh.settings.AllowTcpForwarding = lib.mkForce "local";
