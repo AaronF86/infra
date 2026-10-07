@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   swapDevices = [
     {
       device = "/swapfile";
@@ -7,6 +11,7 @@
   ];
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       efi = {
         canTouchEfiVariables = true;
@@ -17,12 +22,15 @@
         efiSupport = true;
         device = "nodev";
         useOSProber = true;
+        timeout = 1;
       };
     };
     supportedFilesystems = ["btrfs"];
   };
 
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+  };
 
   hardware = {
     graphics.enable = true;
@@ -35,8 +43,13 @@
       qemu.swtpm.enable = true;
     };
     spiceUSBRedirection.enable = true;
-    docker.enable = true;
+    docker = {
+      enable = true;
+      enableOnBoot = false;
+    };
   };
+
+  systemd.services.docker.wantedBy = lib.mkForce [];
 
   users = {
     groups = {

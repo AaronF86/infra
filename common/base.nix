@@ -44,10 +44,10 @@
     curl
     tree
     lsd
-    vim
+    neovim
+    tmux
   ];
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = ["pnpm-10.29.2"];
 
   nix = {
     settings = {
@@ -58,6 +58,19 @@
       auto-optimise-store = true;
 
       warn-dirty = false;
+
+      extra-substituters = [
+        "https://nix-community.cachix.org"
+        "https://haskell-language-server.cachix.org"
+        "https://cache.iog.io"
+        "https://cache.zw3rk.com"
+      ];
+      extra-trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "haskell-language-server.cachix.org-1:juFfHrwkOxqIOZShtC4YC1uT1bBcq2RSvC7OMKx0Nz8="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+        "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk="
+      ];
     };
 
     gc = {
@@ -75,7 +88,7 @@
   system.autoUpgrade = {
     enable = true;
     dates = "weekly";
-    flake = "/home/aaron/dotfiles";
+    flake = "/home/aaron/infra";
     flags = [
       "--update-input"
       "nixpkgs"

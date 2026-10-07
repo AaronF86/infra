@@ -2,7 +2,7 @@ _: {
   boot.supportedFilesystems = ["cifs"];
 
   fileSystems."/mnt/storage" = {
-    device = "//192.168.1.112/storage";
+    device = "//grimoire.local/storage";
     fsType = "cifs";
     options = [
       "guest"

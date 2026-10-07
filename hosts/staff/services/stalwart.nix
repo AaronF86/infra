@@ -109,7 +109,7 @@ in {
 
       store.postgresql = {
         type = "postgresql";
-        host = "192.168.1.112";
+        host = "grimoire.local";
         port = 5432;
 
         database = "stalwart";

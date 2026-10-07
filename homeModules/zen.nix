@@ -1,6 +1,6 @@
 {zen-browser, ...}: {
   imports = [
-    zen-browser.homeModules.twilight
+    zen-browser.homeModules.beta
   ];
   programs.zen-browser = {
     enable = true;
@@ -30,6 +30,10 @@
       "uBlock0@raymondhill.net" = {
         installation_mode = "force_installed";
         install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+      };
+      "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack" = {
+        installation_mode = "force_installed";
+        install_url = "https://addons.mozilla.org/firefox/downloads/latest/grammarly-1/latest.xpi";
       };
     };
   };

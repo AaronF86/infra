@@ -37,6 +37,12 @@
 
     initLua = ''
 
+      vim.diagnostic.config({
+        virtual_text = { severity = { min = vim.diagnostic.severity.HINT } },
+        signs = { severity = { min = vim.diagnostic.severity.HINT } },
+        underline = { severity = { min = vim.diagnostic.severity.HINT } },
+      })
+
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(ev)
           pcall(vim.treesitter.start, ev.buf)
@@ -130,7 +136,13 @@
          settings = {
            haskell = {
              formattingProvider = "ormolu",
-             hlintOn = true,
+             plugin = {
+               hlint = {
+                 globalOn = true,
+                 diagnosticsOn = true,
+                 codeActionsOn = true,
+               },
+             },
            },
          },
        }))
