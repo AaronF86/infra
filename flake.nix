@@ -226,7 +226,7 @@
 
     packages = forAllSystems (
       system: {
-        inherit (nixpkgs.legacyPackages.${system}) colmena;
+        colmena = colmena.packages.${system}.colmena;
       }
     );
 
@@ -234,7 +234,7 @@
       system: {
         colmena = {
           type = "app";
-          program = "${nixpkgs.legacyPackages.${system}.colmena}/bin/colmena";
+          program = "${colmena.packages.${system}.colmena}/bin/colmena";
         };
       }
     );

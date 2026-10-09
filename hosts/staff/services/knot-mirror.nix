@@ -5,13 +5,11 @@
 }: let
   mirrorScript = pkgs.writeShellApplication {
     name = "knot-mirror";
-    runtimeInputs = with pkgs; [git curl openssh sqlite coreutils];
+    runtimeInputs = with pkgs; [git curl openssh jq coreutils];
     text = ''
       GITHUB_TOKEN=$(cat "${config.sops.secrets.github-pat.path}")
       GITHUB_USER="aaronf86"
       OWNER_DID="did:plc:e2nksyu6bnw6lczckjhqweau"
-      KNOT_DB="/var/lib/knot/knot.db"
-      KNOT_GIT="/var/lib/knot/git"
       KNOT_HOST="knot.aaronf86.tech"
       SS_HOST="git.aaronf86.tech"
       SS_PORT="23231"
@@ -29,20 +27,43 @@
       }
 
       echo "Starting knot mirror run"
-      repo_count=$(sqlite3 "$KNOT_DB" "SELECT COUNT(*) FROM repo_aliases WHERE owner_did = '$OWNER_DID';")
-      echo "Found $repo_count repos for $OWNER_DID"
+      failed=0
 
-      sqlite3 "$KNOT_DB" \
-        "SELECT rkey, repo_did FROM repo_aliases WHERE owner_did = '$OWNER_DID';" \
-      | while IFS='|' read -r repo repo_did; do
-        echo "[$repo] Processing repo_did=$repo_did"
-        repo_path="$KNOT_GIT/$repo_did"
+      # Repo list comes from the owner's PDS and clones go over the knot's
+      # public HTTPS endpoint, so nothing here needs the knot's local files.
+      pds=$(curl -sf "https://plc.directory/$OWNER_DID" \
+        | jq -r '.service[] | select(.type == "AtprotoPersonalDataServer") | .serviceEndpoint')
+      repos=$(curl -sf "$pds/xrpc/com.atproto.repo.listRecords?repo=$OWNER_DID&collection=sh.tangled.repo&limit=100" \
+        | jq -r '.records[] | [(.uri | split("/") | last), (.value.name // "")] | @tsv')
+      echo "Found $(printf '%s\n' "$repos" | grep -c .) repos for $OWNER_DID"
 
-        if [[ ! -d "$repo_path" ]]; then
-          echo "[$repo] Skipping: storage path missing ($repo_path)"
-          continue
+      while IFS=$'\t' read -r repo rname; do
+        [[ -n "$repo" ]] || continue
+        # Records keyed by a TID carry the real repo name in the record.
+        if [[ "$repo" =~ ^3[a-z2-7]{12}$ && -n "$rname" ]]; then
+          repo="$rname"
         fi
-        echo "[$repo] Storage path found: $repo_path"
+        echo "[$repo] Processing"
+
+        mirror_dir="$MIRROR_DIR/$repo.git"
+        knot_url="https://$KNOT_HOST/$OWNER_DID/$repo"
+        if [[ -d "$mirror_dir" ]]; then
+          echo "[$repo] Updating existing mirror at $mirror_dir"
+          git -C "$mirror_dir" remote set-url origin "$knot_url"
+          git -C "$mirror_dir" remote update --prune || {
+            echo "[$repo] FAILED: could not update from $knot_url"
+            failed=$((failed + 1))
+            continue
+          }
+        else
+          echo "[$repo] Cloning new mirror from $knot_url"
+          git clone --mirror "$knot_url" "$mirror_dir" || {
+            echo "[$repo] FAILED: could not clone $knot_url"
+            rm -rf "$mirror_dir"
+            failed=$((failed + 1))
+            continue
+          }
+        fi
 
         echo "[$repo] Checking GitHub repo existence"
         if ! curl -sf \
@@ -62,18 +83,14 @@
           echo "[$repo] GitHub repo already exists"
         fi
 
-        mirror_dir="$MIRROR_DIR/$repo.git"
-        if [[ -d "$mirror_dir" ]]; then
-          echo "[$repo] Updating existing mirror at $mirror_dir"
-          git -C "$mirror_dir" remote update --prune
-        else
-          echo "[$repo] Cloning new mirror to $mirror_dir"
-          git clone --mirror "$repo_path" "$mirror_dir"
-        fi
 
         echo "[$repo] Pushing to GitHub"
         git -C "$mirror_dir" push --mirror \
-          "https://$GITHUB_USER:$GITHUB_TOKEN@github.com/$GITHUB_USER/$repo.git"
+          "https://$GITHUB_USER:$GITHUB_TOKEN@github.com/$GITHUB_USER/$repo.git" || {
+          echo "[$repo] FAILED: push to GitHub"
+          failed=$((failed + 1))
+          continue
+        }
         echo "[$repo] Pushed to GitHub"
 
         echo "[$repo] Checking Soft Serve"
@@ -95,9 +112,10 @@
         fi
 
         echo "[$repo] Mirroring complete"
-      done
+      done <<< "$repos"
 
-      echo "Knot mirror run finished"
+      echo "Knot mirror run finished ($failed failed)"
+      [[ "$failed" -eq 0 ]]
     '';
   };
 in {
