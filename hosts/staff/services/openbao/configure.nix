@@ -20,7 +20,7 @@
 
   configureScript = pkgs.writeShellApplication {
     name = "openbao-configure";
-    runtimeInputs = [pkgs.openbao pkgs.curl];
+    runtimeInputs = [pkgs.openbao pkgs.curl pkgs.bash];
     text = ''
       ROOT_TOKEN=$(cat "${config.sops.secrets.openbao-root-token.path}")
 
@@ -97,6 +97,7 @@ in {
     after = ["openbao.service" "openbao-unseal.service"];
     wants = ["openbao.service" "openbao-unseal.service"];
     wantedBy = ["multi-user.target"];
+    environment.HOME = "/root";
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

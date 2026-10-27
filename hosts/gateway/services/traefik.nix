@@ -113,20 +113,6 @@
           tls.certResolver = "letsencrypt";
         };
 
-        pterodactyl-panel = {
-          entryPoints = ["websecure"];
-          rule = "Host(`panel.aaronf86.tech`)";
-          service = "pterodactyl-panel";
-          tls.certResolver = "letsencrypt";
-        };
-
-        pterodactyl-wings = {
-          entryPoints = ["websecure"];
-          rule = "Host(`wings.aaronf86.tech`)";
-          service = "pterodactyl-wings";
-          tls.certResolver = "letsencrypt";
-        };
-
         git = {
           entryPoints = ["websecure"];
           rule = "Host(`git.aaronf86.tech`)";
@@ -154,14 +140,6 @@
 
         knot.loadBalancer.servers = [
           {url = "http://10.44.0.3:5555";}
-        ];
-
-        pterodactyl-panel.loadBalancer.servers = [
-          {url = "http://10.44.0.3:80";}
-        ];
-
-        pterodactyl-wings.loadBalancer.servers = [
-          {url = "http://10.44.0.3:8090";}
         ];
 
         git.loadBalancer.servers = [

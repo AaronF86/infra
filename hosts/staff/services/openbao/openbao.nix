@@ -35,6 +35,9 @@
     after = ["openbao.service"];
     wants = ["openbao.service"];
     wantedBy = ["multi-user.target"];
+    # bao execs `sh` and expands ~ for its token helper
+    path = [pkgs.bash];
+    environment.HOME = "/root";
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -44,7 +47,7 @@
           echo "openbao-unseal-key is not set, skipping auto-unseal"
           exit 0
         fi
-        ${pkgs.openbao}/bin/bao operator unseal "$KEY" || true
+        BAO_ADDR=http://127.0.0.1:8201 ${pkgs.openbao}/bin/bao operator unseal "$KEY" || true
       '';
     };
   };

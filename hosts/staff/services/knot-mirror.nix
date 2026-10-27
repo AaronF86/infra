@@ -56,6 +56,12 @@
             continue
           }
         else
+          # A record on the PDS can outlive (or precede) the repo on the knot;
+          # skip those instead of failing the whole run every time.
+          if ! git ls-remote "$knot_url" > /dev/null 2>&1; then
+            echo "[$repo] Warning: not found on knot at $knot_url, skipping"
+            continue
+          fi
           echo "[$repo] Cloning new mirror from $knot_url"
           git clone --mirror "$knot_url" "$mirror_dir" || {
             echo "[$repo] FAILED: could not clone $knot_url"
@@ -96,16 +102,20 @@
         echo "[$repo] Checking Soft Serve"
         if ! ss_ssh repo info "$repo" > /dev/null 2>&1; then
           echo "[$repo] Not found in Soft Serve, importing"
-          if timeout 60 ssh -n -i "$SS_KEY" -p "$SS_PORT" \
+          import_rc=0
+          import_out=$(timeout 60 ssh -n -i "$SS_KEY" -p "$SS_PORT" \
             -o StrictHostKeyChecking=accept-new \
             -o UserKnownHostsFile="$MIRROR_DIR/.ssh/known_hosts" \
             -o ConnectTimeout=10 \
             -o ServerAliveInterval=10 \
             -o ServerAliveCountMax=3 \
-            "$SS_HOST" repo import "$repo" "https://$KNOT_HOST/$OWNER_DID/$repo"; then
+            "$SS_HOST" repo import "$repo" "https://$KNOT_HOST/$OWNER_DID/$repo" 2>&1) || import_rc=$?
+          if [[ "$import_rc" -eq 0 ]]; then
             echo "[$repo] Imported to Soft Serve"
+          elif [[ "$import_out" == *"already exists"* ]]; then
+            echo "[$repo] Already present in Soft Serve (repo info could not see it)"
           else
-            echo "[$repo] Warning: Soft Serve import failed or timed out"
+            echo "[$repo] Warning: Soft Serve import failed or timed out: $import_out"
           fi
         else
           echo "[$repo] Already present in Soft Serve"

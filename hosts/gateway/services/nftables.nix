@@ -20,11 +20,6 @@ _: {
 
               # Soft-serve SSH
               tcp dport 23231 dnat to 10.44.0.3:23231
-
-              # Game servers → Wings
-              tcp dport 25565-25600 dnat to 10.44.0.3
-              udp dport 25565-25600 dnat to 10.44.0.3
-              udp dport 67 dnat to 10.44.0.3
             }
 
             chain postrouting {
@@ -39,8 +34,7 @@ _: {
     };
     firewall = {
       enable = true;
-      allowedTCPPorts = [23231] ++ (builtins.genList (i: 25565 + i) 36);
-      allowedUDPPorts = [67] ++ builtins.genList (i: 25565 + i) 36;
+      allowedTCPPorts = [23231];
     };
   };
 }

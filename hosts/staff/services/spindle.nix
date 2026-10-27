@@ -8,13 +8,21 @@ _: {
       listenAddr = "0.0.0.0:6555";
 
       queueSize = 100;
-      maxJobCount = 2;
+      maxJobCount = 6;
       secrets = {
         provider = "openbao";
       };
     };
     pipelines = {
-      workflowTimeout = "15m";
+      workflowTimeout = "30m";
+      nixery = {
+        maxJobMemoryMb = 4096;
+        maxConcurrentWorkflows = 6;
+      };
+      microvm.limits = {
+        workflow.memoryMiB = 4096;
+        total.memoryMiB = 6 * 4096;
+      };
     };
   };
 
