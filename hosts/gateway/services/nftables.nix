@@ -20,6 +20,12 @@ _: {
 
               # Soft-serve SSH
               tcp dport 23231 dnat to 10.44.0.3:23231
+
+              # Calagopus Wings SFTP
+              tcp dport 2022 dnat to 10.44.0.3:2022
+
+              # Calagopus game server allocations (staff node, 25565-25600)
+              meta l4proto { tcp, udp } th dport 25565-25600 dnat to 10.44.0.3
             }
 
             chain postrouting {
@@ -34,7 +40,7 @@ _: {
     };
     firewall = {
       enable = true;
-      allowedTCPPorts = [23231];
+      allowedTCPPorts = [23231 2022];
     };
   };
 }

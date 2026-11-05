@@ -43,6 +43,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    authentik-nix.url = "github:nix-community/authentik-nix";
+
+    # TODO: Move to SMP Sales Forgejo
+    smpsales-infra.url = "git+file:///home/aaron/Documents/smpsales/smpsales-infra";
+
+    finder-tickets = {
+      url = "path:/home/aaron/Documents/SMPFinder-Mono/finder-tickets";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -55,6 +65,8 @@
     friendlyelecCM3588,
     home-manager,
     zen-browser,
+    authentik-nix,
+    smpsales-infra,
     ...
   }: let
     inherit (nixpkgs) lib;
@@ -140,7 +152,9 @@
 
           ./hosts/grimoire/configuration.nix
           ./hosts/grimoire/services/samba.nix
-          ./hosts/grimoire/services/postgres.nix
+          ./hosts/grimoire/services/restic-server.nix
+          ./hosts/grimoire/services/restic-server-calagopus.nix
+          ./hosts/grimoire/services/nextcloud.nix
         ];
       };
 
@@ -150,16 +164,22 @@
         deployment.targetHost = "staff";
 
         modules = [
+          disko.nixosModules.disko
           sops-nix.nixosModules.sops
 
           tangled.nixosModules.knot
           tangled.nixosModules.spindle
+          authentik-nix.nixosModules.default
+          smpsales-infra.nixosModules.default
 
           ./hosts/staff/configuration.nix
 
           ./hosts/staff/services/tunnel.nix
           ./hosts/staff/services/files.nix
           ./hosts/staff/services/pds.nix
+          ./hosts/staff/services/backup.nix
+          ./hosts/staff/services/lan-proxy.nix
+          ./hosts/staff/services/authentik.nix
           ./hosts/staff/services/knot.nix
           ./hosts/staff/services/spindle.nix
 
@@ -168,6 +188,11 @@
           ./hosts/staff/services/openbao/configure.nix
           ./hosts/staff/services/git-mirror.nix
           ./hosts/staff/services/knot-mirror.nix
+          ./hosts/staff/services/smpsales.nix
+          ./hosts/staff/services/finder-tickets.nix
+          ./hosts/staff/services/apple-pay.nix
+          ./hosts/staff/services/monitoring.nix
+          ./hosts/staff/services/calagopus.nix
         ];
       };
 
@@ -175,7 +200,8 @@
         system = "x86_64-linux";
 
         deployment = {
-          targetHost = "51.68.220.132";
+          # Admin SSH is WireGuard-only (phase 6); the public IP no longer answers on 2222.
+          targetHost = "10.44.0.1";
         };
 
         modules = [
@@ -188,7 +214,6 @@
           ./hosts/gateway/services/traefik.nix
           ./hosts/gateway/services/haproxy.nix
           ./hosts/gateway/services/nftables.nix
-          ./hosts/gateway/services/smtp-relay.nix
         ];
       };
     };

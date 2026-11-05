@@ -21,6 +21,16 @@ _: {
     };
   };
 
+  # Port 22 is Knot's public git-over-SSH (gateway haproxy → here): git only.
+  # Admin logins stay on 2222, which is reachable from the LAN and WireGuard but never published.
+  services.openssh = {
+    ports = [22];
+    extraConfig = ''
+      Match LocalPort 22
+        AllowUsers git
+    '';
+  };
+
   systemd.tmpfiles.rules = [
     "d /var/lib/knot 0750 git git -"
     "z /var/lib/knot/git 0750 git git -"
