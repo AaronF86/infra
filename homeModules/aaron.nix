@@ -11,18 +11,30 @@
       vesktop
       prismlauncher
 
-      # Development Tools
       haskellPackages.ghc
       haskellPackages.cabal-install
+      python3
       ormolu
       clang-tools
-      nil # Nix LSP
-      nixpkgs-fmt # Nix formatter
-      rust-analyzer # Rust LSP
-      clippy # Rust linter
+      nil
+      nixpkgs-fmt
+      rust-analyzer
+      clippy
       sqlite
       jetbrains.idea
     ];
+  };
+
+  xdg.configFile."gtk-3.0/bookmarks" = {
+    force = true;
+    text = ''
+      file:///home/aaron/Documents
+      file:///home/aaron/Music
+      file:///home/aaron/Pictures
+      file:///home/aaron/Videos
+      file:///home/aaron/Downloads
+      file:///mnt/storage Share
+    '';
   };
 
   imports = [

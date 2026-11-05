@@ -6,6 +6,7 @@
     ../../modules/kmscon.nix
     ./disk-config.nix
     ../../common/smb-client.nix
+    (import ../../common/wg-admin.nix {ip = "10.44.0.4";})
   ];
 
   networking = {
@@ -14,6 +15,9 @@
       "192.168.1.115" = ["grimoire"];
       "192.168.1.241" = ["staff"];
     };
+
+    networkmanager.dns = "none";
+    nameservers = ["192.168.1.241" "192.168.1.115" "192.168.1.1"];
   };
 
   users.users.aaron.shell = pkgs.fish;

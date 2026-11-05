@@ -16,6 +16,13 @@
     DontCheckDefaultBrowser = true;
     NoDefaultBookmarks = true;
     OfferToSaveLogins = true;
+    # Keep DoH, but resolve our own names through the system (LAN unbound, common/lan-dns.nix)
+    # so LAN-only hosts like grafana resolve to staff
+    DNSOverHTTPS = {
+      Enabled = true;
+      ProviderURL = "https://mozilla.cloudflare-dns.com/dns-query";
+      ExcludedDomains = ["aaronf86.tech"];
+    };
     EnableTrackingProtection = {
       Value = true;
       Locked = true;

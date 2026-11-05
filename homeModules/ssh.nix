@@ -23,6 +23,16 @@ _: {
         HostName %h.cis.strath.ac.uk
         User xeb24173
         ProxyCommand ssh cafe -W %h:%p
+
+      Host gateway
+        HostName 10.44.0.1
+        Port 2222
+        User aaron
+
+      Host framework13
+        HostName 10.44.0.5
+        Port 2222
+        User aaron
     '';
   };
 }

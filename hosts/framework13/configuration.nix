@@ -5,6 +5,7 @@
     ../../common/workstation.nix
     ../../modules/kmscon.nix
     ./disk-config.nix
+    (import ../../common/wg-admin.nix {ip = "10.44.0.5";})
   ];
 
   users.defaultUserShell = pkgs.fish;

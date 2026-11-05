@@ -3,6 +3,8 @@
     ../../common/base.nix
     ./hardware-configuration.nix
     ./disk-config.nix
+    # VPS: no SMART, and staff scrapes node over wg0 (port opened in services/tunnel.nix)
+    (import ../../common/metrics.nix {smart = false;})
   ];
 
   boot.loader.grub = {
@@ -16,7 +18,6 @@
     useDHCP = true;
     firewall = {
       enable = true;
-      allowedTCPPorts = [22 2222 25 80 443 465 993];
       allowedUDPPorts = [51820];
     };
   };

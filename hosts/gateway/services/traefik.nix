@@ -23,13 +23,12 @@
 
         websecure = {
           address = ":443";
+          transport.respondingTimeouts.readTimeout = "3600s";
           http = {
             tls.options = "modern";
             middlewares = ["hsts@file"];
           };
         };
-
-        wings-sftp.address = ":2022";
       };
 
       api = {
@@ -66,17 +65,6 @@
       sniStrict = true;
     };
 
-    dynamicConfigOptions.tcp = {
-      routers.wings-sftp = {
-        entryPoints = ["wings-sftp"];
-        rule = "HostSNI(`*`)";
-        service = "wings-sftp";
-      };
-      services.wings-sftp.loadBalancer.servers = [
-        {address = "10.44.0.3:2022";}
-      ];
-    };
-
     dynamicConfigOptions.http = {
       routers = {
         spindle = {
@@ -85,13 +73,6 @@
           service = "spindle";
           tls.certResolver = "letsencrypt";
         };
-        mail = {
-          entryPoints = ["websecure"];
-          rule = "Host(`mail.notify.aaronf86.tech`)";
-          service = "mail";
-          tls.certResolver = "letsencrypt";
-        };
-
         pds = {
           entryPoints = ["websecure"];
           rule = "Host(`pds.aaronf86.tech`)";
@@ -119,15 +100,62 @@
           service = "git";
           tls.certResolver = "letsencrypt";
         };
+
+        auth = {
+          entryPoints = ["websecure"];
+          rule = "Host(`auth.aaronf86.tech`)";
+          service = "auth";
+          tls.certResolver = "letsencrypt";
+        };
+
+        cloud = {
+          entryPoints = ["websecure"];
+          rule = "Host(`cloud.aaronf86.tech`)";
+          service = "cloud";
+          tls.certResolver = "letsencrypt";
+        };
+
+        panel = {
+          entryPoints = ["websecure"];
+          rule = "Host(`panel.aaronf86.tech`)";
+          service = "panel";
+          tls.certResolver = "letsencrypt";
+        };
+
+        smpsales-auth = {
+          entryPoints = ["websecure"];
+          rule = "Host(`auth.smpsales.team`)";
+          service = "auth";
+          tls.certResolver = "letsencrypt";
+        };
+
+        smpsales-onboard = {
+          entryPoints = ["websecure"];
+          rule = "Host(`onboard.smpsales.team`) && !PathPrefix(`/api/internal`)";
+          service = "smpsales-onboard";
+          tls.certResolver = "letsencrypt";
+        };
+
+        smpsales-pay = {
+          entryPoints = ["websecure"];
+          rule = "Host(`pay.smpsales.team`) && (Path(`/ads`) || PathPrefix(`/ads/`) || PathPrefix(`/auth/`) || Path(`/webhooks/whop`) || PathPrefix(`/api/ads/`))";
+          service = "smpsales-fin";
+          tls.certResolver = "letsencrypt";
+        };
+
+        smpsales-pay-applepay = {
+          entryPoints = ["websecure"];
+          rule = "Host(`pay.smpsales.team`) && Path(`/.well-known/apple-developer-merchantid-domain-association`)";
+          service = "staff-apple-pay";
+          tls.certResolver = "letsencrypt";
+        };
       };
+
+      serversTransports.staff-tls.serverName = "cloud.aaronf86.tech";
 
       services = {
         spindle.loadBalancer.servers = [
           {url = "http://10.44.0.3:6555";}
-        ];
-
-        mail.loadBalancer.servers = [
-          {url = "http://10.44.0.3:8080";}
         ];
 
         staff-files.loadBalancer.servers = [
@@ -145,6 +173,31 @@
         git.loadBalancer.servers = [
           {url = "http://10.44.0.3:23232";}
         ];
+
+        auth.loadBalancer.servers = [
+          {url = "http://10.44.0.3:9000";}
+        ];
+
+        smpsales-onboard.loadBalancer.servers = [
+          {url = "http://10.44.0.3:8095";}
+        ];
+
+        smpsales-fin.loadBalancer.servers = [
+          {url = "http://10.44.0.3:8090";}
+        ];
+
+        staff-apple-pay.loadBalancer.servers = [
+          {url = "http://10.44.0.3:8091";}
+        ];
+
+        panel.loadBalancer.servers = [
+          {url = "http://10.44.0.3:8000";}
+        ];
+
+        cloud.loadBalancer = {
+          servers = [{url = "https://10.44.0.3";}];
+          serversTransport = "staff-tls";
+        };
       };
     };
   };
@@ -157,6 +210,5 @@
   networking.firewall.allowedTCPPorts = [
     80
     443
-    2022
   ];
 }

@@ -47,6 +47,11 @@
     neovim
     tmux
   ];
+
+  environment.shellAliases = {
+    blk = "lsblk -o NAME,SIZE,TYPE,FSTYPE,LABEL,FSUSE%,MOUNTPOINTS";
+    raid = "cat /proc/mdstat";
+  };
   nixpkgs.config.allowUnfree = true;
 
   nix = {
