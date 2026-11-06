@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   domain = "aaronf86.tech";
 
   proxy = port: {
@@ -35,7 +39,18 @@ in {
     clientMaxBodySize = "512m";
 
     virtualHosts = {
-      "knot.${domain}" = proxy 5555;
+      "knot.${domain}" =
+        lib.recursiveUpdate (proxy 5555) {
+          # Knot event stream (moved from /events in v1.20).
+          locations."= /xrpc/com.atproto.sync.subscribeRepos" = {
+            proxyPass = "http://127.0.0.1:5555";
+            proxyWebsockets = true;
+            extraConfig = ''
+              proxy_read_timeout 1h;
+              proxy_buffering off;
+            '';
+          };
+        };
       "git.${domain}" = proxy 23232;
       "spindle.${domain}" = proxy 6555;
       "pds.${domain}" =

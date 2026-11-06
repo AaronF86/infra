@@ -1,40 +1,63 @@
-_: {
-  services.tangled.knot = {
+{
+  config,
+  lib,
+  pkgs,
+  tangled-pkgs,
+  ...
+}: {
+  sops.secrets.knot-env = {
+    sopsFile = ../../../secrets/knot.env.enc;
+    format = "dotenv";
+  };
+
+  services.tangled.knot-rs = {
     enable = true;
-    stateDir = "/var/lib/knot/git";
-    repo = {
-      scanPath = "/var/lib/knot/git";
-      mainBranch = "main";
-    };
 
-    server = {
-      listenAddr = "0.0.0.0:5555";
-      internalListenAddr = "127.0.0.1:5444";
+    package = tangled-pkgs.knot-rs.overrideAttrs (old: {
+      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.patchelf];
+      postFixup =
+        (old.postFixup or "")
+        + ''
+          patchelf --add-rpath ${lib.getLib pkgs.zstd}/lib $out/bin/knot-server
+        '';
+    });
 
-      owner = "did:plc:e2nksyu6bnw6lczckjhqweau";
+    stateDir = "/var/lib/knot-rs";
+    environmentFile = config.sops.secrets.knot-env.path;
 
-      dbPath = "/var/lib/knot/knot.db";
+    openFirewall = false;
 
-      hostname = "knot.aaronf86.tech";
+    settings = {
+      server = {
+        hostname = "knot.aaronf86.tech";
+        admins = ["did:plc:e2nksyu6bnw6lczckjhqweau"];
 
-      logDids = true;
+        listen_addr = "0.0.0.0:5555";
+        ssh_listen_addr = "[::]:22";
+      };
+
+      git.object_format = "sha1";
+
+      atproto.plc_directory = "https://plc.directory";
+      contact.email = "aaron@aaronf86.tech";
+
+      xrpc = {
+        trusted_proxy_header = "x-forwarded-for";
+        trusted_proxies = ["10.44.0.1" "127.0.0.1"];
+      };
     };
   };
 
-  # Port 22 is Knot's public git-over-SSH (gateway haproxy → here): git only.
-  # Admin logins stay on 2222, which is reachable from the LAN and WireGuard but never published.
-  services.openssh = {
-    ports = [22];
-    extraConfig = ''
-      Match LocalPort 22
-        AllowUsers git
-    '';
+  systemd.services.knot-rs.serviceConfig = {
+    BindReadOnlyPaths = [
+      "${pkgs.writeText "knot-resolv.conf" ''
+        nameserver 1.1.1.1
+        nameserver 9.9.9.9
+        options edns0
+      ''}:/etc/resolv.conf"
+    ];
+    InaccessiblePaths = ["-/run/nscd"];
   };
-
-  systemd.tmpfiles.rules = [
-    "d /var/lib/knot 0750 git git -"
-    "z /var/lib/knot/git 0750 git git -"
-  ];
 
   networking.firewall = {
     allowedTCPPorts = [22];

@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "actor-typeahead-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1762835797,
-        "narHash": "sha256-heizoWUKDdar6ymfZTnj3ytcEv/L4d4fzSmtr0HlXsQ=",
-        "ref": "refs/heads/main",
-        "rev": "677fe7f743050a4e7f09d4a6f87bbf1325a06f6b",
-        "revCount": 6,
-        "type": "git",
-        "url": "https://tangled.org/@jakelazaroff.com/actor-typeahead"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://tangled.org/@jakelazaroff.com/actor-typeahead"
-      }
-    },
     "authentik-nix": {
       "inputs": {
         "authentik-src": "authentik-src",
@@ -814,18 +798,6 @@
         "type": "github"
       }
     },
-    "hls-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-mmxgaQRXXWzRG6/OlOn5efV+NmzhvmXTQaFbODqh0b8=",
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -860,30 +832,6 @@
         "owner": "sevanspowell",
         "repo": "hpc-coveralls",
         "type": "github"
-      }
-    },
-    "htmx-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-2D8I0L0u6qb57QpeVn88RrT0xatDwQwG/lWOTjuEFPc=",
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
-      }
-    },
-    "htmx-ws-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-woiluaeAoxH/CyDkpk6LYNWCzxH8PHgwgnrlBFGJxgk=",
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4"
       }
     },
     "hydrant": {
@@ -947,19 +895,6 @@
         "type": "github"
       }
     },
-    "inter-fonts-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1731687360,
-        "narHash": "sha256-5vdKKvHAeZi6igrfpbOdhZlDX2/5+UvzlnCQV6DdqoQ=",
-        "type": "tarball",
-        "url": "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip"
-      }
-    },
     "iserv-proxy": {
       "flake": false,
       "locked": {
@@ -975,43 +910,6 @@
         "ref": "iserv-syms",
         "repo": "iserv-proxy",
         "type": "github"
-      }
-    },
-    "lucide-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1754044466,
-        "narHash": "sha256-+exBR2OToB1iv7ZQI2S4B0lXA/QRvC9n6U99UxGpJGs=",
-        "type": "tarball",
-        "url": "https://github.com/lucide-icons/lucide/releases/download/0.536.0/lucide-icons-0.536.0.zip"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/lucide-icons/lucide/releases/download/0.536.0/lucide-icons-0.536.0.zip"
-      }
-    },
-    "mathjax-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-eqg25bKfiDzynRMR2RfeWNfo0EefHF/eRRFafl9RnNI=",
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-svg.js"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-svg.js"
-      }
-    },
-    "mermaid-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-/YOdECG2V5c3kJ1QfGvhziTT6K/Dx/4mOk2mr3Fs/do=",
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/mermaid@11.12.3/dist/mermaid.min.js"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://cdn.jsdelivr.net/npm/mermaid@11.12.3/dist/mermaid.min.js"
       }
     },
     "microvm": {
@@ -1563,52 +1461,30 @@
         "type": "github"
       }
     },
-    "tailwindcss-animated-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 499162500,
-        "narHash": "sha256-l3esIcsAwj0PHOhnHBLWiLzzRiOo1yOk9VYEGpn6fyQ=",
-        "type": "tarball",
-        "url": "https://registry.npmjs.org/tailwindcss-animated/-/tailwindcss-animated-1.1.2.tgz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://registry.npmjs.org/tailwindcss-animated/-/tailwindcss-animated-1.1.2.tgz"
-      }
-    },
     "tangled": {
       "inputs": {
-        "actor-typeahead-src": "actor-typeahead-src",
         "fenix": "fenix",
         "fetch-tangled": "fetch-tangled",
         "flake-compat": "flake-compat_4",
         "gomod2nix": "gomod2nix",
-        "hls-src": "hls-src",
-        "htmx-src": "htmx-src",
-        "htmx-ws-src": "htmx-ws-src",
         "hydrant": "hydrant",
         "hydrant-dev": "hydrant-dev",
         "ibm-plex-mono-src": "ibm-plex-mono-src",
         "indigo": "indigo",
-        "inter-fonts-src": "inter-fonts-src",
-        "lucide-src": "lucide-src",
-        "mathjax-src": "mathjax-src",
-        "mermaid-src": "mermaid-src",
         "microvm": "microvm",
         "nixpkgs": [
           "nixpkgs"
         ],
         "nixpkgs-pds": "nixpkgs-pds",
         "sqlite-lib-src": "sqlite-lib-src",
-        "tailwindcss-animated-src": "tailwindcss-animated-src",
         "timeless-fonts-src": "timeless-fonts-src"
       },
       "locked": {
-        "lastModified": 1793322901,
-        "narHash": "sha256-ls623ueJwU4y9PCarSpvZ4DxkBPcOBelpu1rCulUd9c=",
+        "lastModified": 1793877578,
+        "narHash": "sha256-adzEvQ5P6OL5vDFJPOVJ9tb+RZhxCDO1+FwF2CLsIq8=",
         "ref": "refs/heads/master",
-        "rev": "db269aa5886dbc98c42010fd9d15f5e60a341f65",
-        "revCount": 6019,
+        "rev": "53d825d3285c0880b4cac06b1d8c7aec6a922757",
+        "revCount": 6284,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
       },

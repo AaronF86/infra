@@ -167,7 +167,7 @@
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
 
-          tangled.nixosModules.knot
+          tangled.nixosModules.knot-rs
           tangled.nixosModules.spindle
           authentik-nix.nixosModules.default
           smpsales-infra.nixosModules.default

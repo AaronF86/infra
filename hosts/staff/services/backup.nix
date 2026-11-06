@@ -32,8 +32,8 @@
       "/var/lib/postgresql"
     ];
 
-    backupPrepareCommand = "systemctl stop bluesky-pds knot";
-    backupCleanupCommand = "systemctl start bluesky-pds knot";
+    backupPrepareCommand = "systemctl stop bluesky-pds knot-rs";
+    backupCleanupCommand = "systemctl start bluesky-pds knot-rs";
 
     timerConfig = {
       OnCalendar = "04:00";

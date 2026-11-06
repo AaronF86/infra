@@ -140,7 +140,6 @@ in {
   users.users.git-mirror = {
     isSystemUser = true;
     group = "git-mirror";
-    extraGroups = ["git"];
     home = "/var/lib/knot-mirror";
     createHome = false;
   };
